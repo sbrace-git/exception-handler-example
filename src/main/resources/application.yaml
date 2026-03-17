@@ -1,3 +1,6 @@
 spring:
   application:
     name: exception-handler-example
+  mvc:
+    problemdetails:
+      enabled: false

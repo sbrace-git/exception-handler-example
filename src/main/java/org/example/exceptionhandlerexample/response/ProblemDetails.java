@@ -10,14 +10,12 @@ import java.util.List;
 @Setter
 public class ProblemDetails extends ProblemDetail {
 
-    private List<Object> errors;
+    private String errorCode;
 
-    public ProblemDetails() {
-    }
+    private List<ParamError> errors;
 
     public ProblemDetails(ProblemDetail problemDetail) {
         super(problemDetail);
-        errors = List.of(problemDetail);
     }
 
 }
