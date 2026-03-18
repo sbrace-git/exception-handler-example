@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
 
-    @PostMapping("/get/{id}/aa")
+    @GetMapping("/{id}")
     public User get(@PathVariable Integer id) {
         User user = new User();
         user.setId(id);

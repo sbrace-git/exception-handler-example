@@ -1,5 +1,6 @@
 package org.example.exceptionhandlerexample.reuqest.user;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.ToString;
 import org.example.exceptionhandlerexample.reuqest.valid.annocation.ConfirmPassword;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.validation.annotation.Validated;
 
 @Getter
 @Setter
@@ -25,4 +27,7 @@ public class UserRequest {
 
     private String password;
     private String confirmPassword;
+
+    @Valid
+    private UserRequest userRequest;
 }
