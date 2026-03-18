@@ -4,17 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 public class ErrorCode {
-    public static final String BAD_REQUEST = "A00000";
-    public static final String HTTP_METHOD_NOT_ALLOWED = "A00005";
+    public static final String PRE_FIX = "A00";
+    public static final String UNKNOW = "000";
 
     public static String httpStatusCode(HttpStatusCode httpStatusCode) {
         if (null == httpStatusCode) {
-            return BAD_REQUEST;
+            return PRE_FIX + UNKNOW;
         }
-        if (httpStatusCode.isSameCodeAs(HttpStatus.METHOD_NOT_ALLOWED)) {
-            return HTTP_METHOD_NOT_ALLOWED;
-        }
-        return BAD_REQUEST;
+        return PRE_FIX + httpStatusCode.value();
     }
 
     public static String httpStatusValue(int httpStatusValue) {

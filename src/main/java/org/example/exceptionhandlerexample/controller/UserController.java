@@ -1,7 +1,6 @@
 package org.example.exceptionhandlerexample.controller;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.model.User;
 import org.example.exceptionhandlerexample.reuqest.user.UserRequest;
@@ -13,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("/{id}")
-    public User get(@NotNull(message = "id 不能为空") @PathVariable Integer id) {
+    @GetMapping("/id/{id}/profile")
+    public User get(@PathVariable Integer iid) {
         User user = new User();
-        user.setId(id);
+        user.setId(iid);
         return user;
     }
 
