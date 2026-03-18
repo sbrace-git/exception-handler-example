@@ -24,15 +24,20 @@ public class UserController {
         log.info("delete id = {}", id);
     }
 
+    @DeleteMapping("/v2/{id}")
+    public void deleteV2(@PathVariable Integer iid) {
+        log.info("delete iid = {}", iid);
+    }
+
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserRequest put(UserRequest userRequest) {
-        log.info("Put userRequest = {}", userRequest);
+        log.info("put userRequest = {}", userRequest);
         return userRequest;
     }
 
-    @PutMapping(path = "/put1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserRequest put1(UserRequest userRequest) {
-        log.info("Put userRequest = {}", userRequest);
+    @PutMapping(path = "/v2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserRequest putV2(UserRequest userRequest) {
+        log.info("put userRequest = {}", userRequest);
         return userRequest;
     }
 
