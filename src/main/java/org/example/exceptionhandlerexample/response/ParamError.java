@@ -10,6 +10,7 @@ import org.springframework.validation.ObjectError;
 @Getter
 @Setter
 public class ParamError {
+    private String type;
     private String field;
     private String message;
 
@@ -18,10 +19,12 @@ public class ParamError {
             this.field = fieldError.getField();
         }
         this.message = objectError.getDefaultMessage();
+        this.type = ParamErrorType.PARAMETER;
     }
 
-    public ParamError(String field, String message) {
+    public ParamError(String field, String message, String type) {
         this.field = field;
         this.message = message;
+        this.type = type;
     }
 }

@@ -1,20 +1,27 @@
 package org.example.exceptionhandlerexample.component;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.example.exceptionhandlerexample.response.ErrorCode;
 import org.example.exceptionhandlerexample.response.ParamError;
+import org.example.exceptionhandlerexample.response.ParamErrorType;
 import org.example.exceptionhandlerexample.response.ProblemDetails;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.*;
 import org.springframework.validation.method.ParameterErrors;
 import org.springframework.validation.method.ParameterValidationResult;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.WebUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +29,6 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
-
 
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -40,6 +46,10 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
             @Override
             public void cookieValue(CookieValue cookieValue, ParameterValidationResult result) {
                 log.info("result = {}", result);
+                String parameterName = result.getMethodParameter().getParameterName();
+                result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
+                        .map(defaultMessage -> new ParamError(parameterName, defaultMessage, ParamErrorType.COOKIE))
+                        .forEach(paramErrorList::add);
             }
 
             @Override
@@ -73,7 +83,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
                 log.info("result = {}", result);
                 String parameterName = result.getMethodParameter().getParameterName();
                 result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
-                        .map(defaultMessage -> new ParamError(parameterName, defaultMessage))
+                        .map(defaultMessage -> new ParamError(parameterName, defaultMessage, ParamErrorType.PARAMETER))
                         .forEach(paramErrorList::add);
             }
 
@@ -96,5 +106,32 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetails problemDetails = new ProblemDetails(ex.getBody());
         problemDetails.setErrors(paramErrorList);
         return handleExceptionInternal(ex, problemDetails, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        switch (body) {
+            case null -> {
+                ProblemDetails problemDetails = new ProblemDetails();
+                problemDetails.setErrorCode(ErrorCode.httpStatusCode(statusCode));
+                body = problemDetails;
+            }
+            case ProblemDetails problemDetails -> {
+                if (null == problemDetails.getErrorCode()) {
+                    problemDetails.setErrorCode(ErrorCode.httpStatusCode(statusCode));
+                }
+            }
+            case ProblemDetail problemDetail -> body = new ProblemDetails(problemDetail);
+            default -> {
+            }
+        }
+
+        return super.createResponseEntity(body, headers, statusCode, request);
+    }
+
+    @Override
+    protected ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, @Nullable String detailMessageCode, Object @Nullable [] detailMessageArguments, WebRequest request) {
+        ProblemDetail problemDetail = super.createProblemDetail(ex, status, defaultDetail, detailMessageCode, detailMessageArguments, request);
+        return new ProblemDetails(problemDetail);
     }
 }
