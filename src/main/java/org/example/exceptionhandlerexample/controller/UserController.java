@@ -1,10 +1,9 @@
 package org.example.exceptionhandlerexample.controller;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.model.User;
 import org.example.exceptionhandlerexample.reuqest.user.UserRequest;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -12,23 +11,29 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("/id/{id}/profile")
-    public User get(@PathVariable Integer iid) {
+    @GetMapping("/{id}")
+    public User get(@PathVariable Integer id) {
+        log.info("get id = {}", id);
         User user = new User();
-        user.setId(iid);
+        user.setId(id);
         return user;
     }
 
-    @GetMapping("/query")
-    public ResponseEntity<Void> put(@NotBlank String id) {
-        log.info("id = {}", id);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        log.info("delete id = {}", id);
     }
 
-    @PostMapping(value = "/upload", params = {"a=1", "a=2", "b=3", "c!=4"})
-    public UserRequest upload(UserRequest userRequest) {
-//        log.info("Uploading file {}", file.getOriginalFilename());
-        log.info("userRequest {}", userRequest);
-        return null;
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public UserRequest put(UserRequest userRequest) {
+        log.info("Put userRequest = {}", userRequest);
+        return userRequest;
     }
+
+    @PutMapping(path = "/put1", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserRequest put1(UserRequest userRequest) {
+        log.info("Put userRequest = {}", userRequest);
+        return userRequest;
+    }
+
 }

@@ -1,27 +1,23 @@
 package org.example.exceptionhandlerexample.component;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.example.exceptionhandlerexample.response.ErrorCode;
 import org.example.exceptionhandlerexample.response.ParamError;
 import org.example.exceptionhandlerexample.response.ParamErrorType;
 import org.example.exceptionhandlerexample.response.ProblemDetails;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.method.ParameterErrors;
 import org.springframework.validation.method.ParameterValidationResult;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.util.WebUtils;
 
 import java.util.ArrayList;
 import java.util.List;
