@@ -30,8 +30,8 @@ public class ProblemController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable Integer id) {
-        log.info("id = {}", id);
+    public void delete(@PathVariable Integer iid) {
+        log.info("iid = {}", iid);
     }
 
     @PutMapping("/file")
