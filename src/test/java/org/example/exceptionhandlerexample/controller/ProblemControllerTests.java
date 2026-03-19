@@ -40,15 +40,13 @@ class ProblemControllerTests {
                 .hasStatus(METHOD_NOT_ALLOWED)
                 .hasContentType(APPLICATION_PROBLEM_JSON)
                 .hasHeader(ALLOW, HttpMethod.GET.name());
-        AbstractObjectAssert<?, ProblemDetails> body = assertThat(result).bodyJson().convertTo(ProblemDetails.class);
-        body.isNotNull().satisfies(problemDetails -> {
-            assertThat(problemDetails.getDetail()).contains(Arrays.asList(HttpMethod.POST.name(), "not supported"));
-            assertThat(problemDetails.getErrorCode()).isEqualTo("A00405");
-            assertThat(problemDetails.getInstance()).isEqualTo(URI.create(url));
-            assertThat(problemDetails.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
-            assertThat(problemDetails.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
-        });
-
+        ProblemDetails problemDetails = assertThat(result).bodyJson()
+                .convertTo(ProblemDetails.class).isNotNull().actual();
+        assertThat(problemDetails.getDetail()).contains(Arrays.asList(HttpMethod.POST.name(), "not supported"));
+        assertThat(problemDetails.getErrorCode()).isEqualTo("A00405");
+        assertThat(problemDetails.getInstance()).isEqualTo(URI.create(url));
+        assertThat(problemDetails.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
+        assertThat(problemDetails.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
     }
 
     @Test
@@ -59,14 +57,13 @@ class ProblemControllerTests {
                 .hasStatus(UNSUPPORTED_MEDIA_TYPE)
                 .hasContentType(APPLICATION_PROBLEM_JSON)
                 .hasHeader(ACCEPT, APPLICATION_JSON_VALUE);
-        AbstractObjectAssert<?, ProblemDetails> body = assertThat(result).bodyJson().convertTo(ProblemDetails.class);
-        body.isNotNull().satisfies(problemDetails -> {
-            assertThat(problemDetails.getDetail()).contains(Arrays.asList("null", "not supported"));
-            assertThat(problemDetails.getErrorCode()).isEqualTo("A00415");
-            assertThat(problemDetails.getInstance()).isEqualTo(URI.create(url));
-            assertThat(problemDetails.getStatus()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.value());
-            assertThat(problemDetails.getTitle()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.getReasonPhrase());
-        });
+        ProblemDetails problemDetails = assertThat(result).bodyJson()
+                .convertTo(ProblemDetails.class).isNotNull().actual();
+        assertThat(problemDetails.getDetail()).contains(Arrays.asList("null", "not supported"));
+        assertThat(problemDetails.getErrorCode()).isEqualTo("A00415");
+        assertThat(problemDetails.getInstance()).isEqualTo(URI.create(url));
+        assertThat(problemDetails.getStatus()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.value());
+        assertThat(problemDetails.getTitle()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.getReasonPhrase());
     }
 
     @Test
@@ -74,17 +71,17 @@ class ProblemControllerTests {
         String url = "/problem/produce-json";
         MvcTestResult result = mockMvcTester.put().uri(url)
                 .header(ACCEPT, APPLICATION_XML_VALUE).exchange();
-        assertThat(result).hasStatus(NOT_ACCEPTABLE)
+        assertThat(result)
+                .hasStatus(NOT_ACCEPTABLE)
                 .hasContentType(APPLICATION_PROBLEM_JSON)
                 .hasHeader(ACCEPT, APPLICATION_JSON_VALUE);
-        AbstractObjectAssert<?, ProblemDetails> body = assertThat(result).bodyJson().convertTo(ProblemDetails.class);
-        body.isNotNull().satisfies(problemDetails -> {
-            assertThat(problemDetails.getDetail()).contains(Arrays.asList(APPLICATION_JSON_VALUE, "Acceptable"));
-            assertThat(problemDetails.getErrorCode()).isEqualTo("A00406");
-            assertThat(problemDetails.getInstance()).isEqualTo(URI.create(url));
-            assertThat(problemDetails.getStatus()).isEqualTo(NOT_ACCEPTABLE.value());
-            assertThat(problemDetails.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
-        });
+        ProblemDetails problemDetails = assertThat(result).bodyJson()
+                .convertTo(ProblemDetails.class).isNotNull().actual();
+        assertThat(problemDetails.getDetail()).contains(Arrays.asList(APPLICATION_JSON_VALUE, "Acceptable"));
+        assertThat(problemDetails.getErrorCode()).isEqualTo("A00406");
+        assertThat(problemDetails.getInstance()).isEqualTo(URI.create(url));
+        assertThat(problemDetails.getStatus()).isEqualTo(NOT_ACCEPTABLE.value());
+        assertThat(problemDetails.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
     }
 
     @Test
