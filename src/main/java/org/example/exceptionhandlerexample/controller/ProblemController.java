@@ -13,8 +13,8 @@ import java.util.List;
 @RequestMapping("/problem")
 public class ProblemController {
 
-    @GetMapping("/get-by-id")
-    public void getById(@RequestParam Integer id) {
+    @GetMapping("/param")
+    public void get(@RequestParam Integer id) {
         log.info("id = {}", id);
     }
 
@@ -46,5 +46,10 @@ public class ProblemController {
     @GetMapping("/cookie")
     public void cookie(@CookieValue String cookieValue) {
         log.info("cookieValue = {}", cookieValue);
+    }
+
+    @GetMapping("/header")
+    public void header(@RequestHeader String header) {
+        log.info("header = {}", header);
     }
 }

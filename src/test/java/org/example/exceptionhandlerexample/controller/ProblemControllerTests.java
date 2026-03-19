@@ -24,7 +24,7 @@ class ProblemControllerTests {
 
     @Test
     void httpRequestMethodNotSupportedExceptionTest() throws Exception {
-        String url = "/problem/get-by-id";
+        String url = "/problem/param";
         mockMvc.perform(MockMvcRequestBuilders.post(url))
                 .andExpect(status().isMethodNotAllowed())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
@@ -88,7 +88,7 @@ class ProblemControllerTests {
 
     @Test
     void missingServletRequestParameterExceptionTest() throws Exception {
-        String url = "/problem/get-by-id";
+        String url = "/problem/param";
         mockMvc.perform(MockMvcRequestBuilders.get(url))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
@@ -143,6 +143,22 @@ class ProblemControllerTests {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.detail").value(Matchers.allOf(
                         Matchers.containsString("cookieValue"),
+                        Matchers.containsString("is not present")
+                )))
+                .andExpect(jsonPath("$.errorCode").value("A00400"))
+                .andExpect(jsonPath("$.instance").value(url))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.title").value(BAD_REQUEST.getReasonPhrase()));
+    }
+
+    @Test
+    void servletRequestBindingExceptionMissingRequestHeaderException() throws Exception {
+        String url = "/problem/header";
+        mockMvc.perform(MockMvcRequestBuilders.get(url))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value(Matchers.allOf(
+                        Matchers.containsString("header"),
                         Matchers.containsString("is not present")
                 )))
                 .andExpect(jsonPath("$.errorCode").value("A00400"))
