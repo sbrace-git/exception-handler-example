@@ -49,7 +49,10 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
             @Override
             public void matrixVariable(MatrixVariable matrixVariable, ParameterValidationResult result) {
-                log.info("result = {}", result);
+                String parameterName = result.getMethodParameter().getParameterName();
+                result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
+                        .map(defaultMessage -> new ParamError(parameterName, defaultMessage, ParamErrorType.PARAMETER))
+                        .forEach(paramErrorList::add);
             }
 
             @Override

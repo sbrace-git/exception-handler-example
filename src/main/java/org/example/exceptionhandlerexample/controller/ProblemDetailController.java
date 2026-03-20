@@ -1,5 +1,6 @@
 package org.example.exceptionhandlerexample.controller;
 
+import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.reuqest.problem.ProblemDetailRequest;
 import org.hibernate.validator.constraints.Length;
@@ -69,5 +70,11 @@ public class ProblemDetailController {
     public String cookieValue(@CookieValue @Length(min = 2, message = "姓名长度最小是 2") String name) {
         log.info("name: {}", name);
         return name;
+    }
+
+    @GetMapping("/matrix-variable/{id}")
+    public void matrixVariable(@PathVariable String id,
+                               @MatrixVariable @Size(max = 2, message = "最大长度是 2") List<String> list) {
+        log.info("id: {}, list: {}", id, list);
     }
 }

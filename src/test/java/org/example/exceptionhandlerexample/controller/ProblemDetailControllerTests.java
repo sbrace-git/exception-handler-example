@@ -213,11 +213,12 @@ class ProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(url));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-        assertThat(nestedProblemDetail.getErrors()).hasSize(4)
-                .contains(new ParamError("name", "姓名长度范围 6-10", ParamErrorType.PARAMETER))
-                .contains(new ParamError("age", "年龄不可为空", ParamErrorType.PARAMETER))
-                .contains(new ParamError("password", "密码与确认密码不一致", ParamErrorType.PARAMETER))
-                .contains(new ParamError("confirmPassword", "密码与确认密码不一致", ParamErrorType.PARAMETER));
+        assertThat(nestedProblemDetail.getErrors()).containsExactlyInAnyOrder(
+                new ParamError("name", "姓名长度范围 6-10", ParamErrorType.PARAMETER),
+                new ParamError("age", "年龄不可为空", ParamErrorType.PARAMETER),
+                new ParamError("password", "密码与确认密码不一致", ParamErrorType.PARAMETER),
+                new ParamError("confirmPassword", "密码与确认密码不一致", ParamErrorType.PARAMETER)
+        );
     }
 
     @Test
@@ -234,7 +235,25 @@ class ProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(url));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-        assertThat(nestedProblemDetail.getErrors()).hasSize(1)
-                .containsOnly(new ParamError("name", "姓名长度最小是 2",ParamErrorType.COOKIE));
+        assertThat(nestedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new ParamError("name", "姓名长度最小是 2", ParamErrorType.COOKIE));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionMatrixVariable() {
+        String url = BASE_PATH + "/matrix-variable/abc;list=a,b,c";
+        MvcTestResult result = mockMvcTester.get().uri(url).exchange();
+        assertThat(result)
+                .hasStatus(BAD_REQUEST)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(url));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new ParamError("list", "最大长度是 2", ParamErrorType.PARAMETER));
     }
 }
