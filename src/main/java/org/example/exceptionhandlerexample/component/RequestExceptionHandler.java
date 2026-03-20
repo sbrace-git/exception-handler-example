@@ -2,8 +2,7 @@ package org.example.exceptionhandlerexample.component;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.response.ErrorCode;
-import org.example.exceptionhandlerexample.response.ParamError;
-import org.example.exceptionhandlerexample.response.ParamErrorType;
+import org.example.exceptionhandlerexample.response.Error;
 import org.example.exceptionhandlerexample.response.NestedProblemDetail;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.MessageSourceResolvable;
@@ -28,31 +27,31 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        List<ParamError> paramErrorList = ex.getBindingResult().getAllErrors().stream().map(ParamError::new).toList();
+        List<Error> errorList = ex.getBindingResult().getAllErrors().stream().map(Error::new).toList();
         NestedProblemDetail nestedProblemDetail = new NestedProblemDetail(ex.getBody());
-        nestedProblemDetail.setErrors(paramErrorList);
+        nestedProblemDetail.setErrors(errorList);
         return handleExceptionInternal(ex, nestedProblemDetail, headers, status, request);
     }
 
     @Override
     protected @Nullable ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        List<ParamError> paramErrorList = new ArrayList<>();
+        List<Error> errorList = new ArrayList<>();
         ex.visitResults(new HandlerMethodValidationException.Visitor() {
 
             @Override
             public void cookieValue(CookieValue cookieValue, ParameterValidationResult result) {
                 String parameterName = result.getMethodParameter().getParameterName();
                 result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
-                        .map(defaultMessage -> new ParamError(parameterName, defaultMessage, ParamErrorType.COOKIE))
-                        .forEach(paramErrorList::add);
+                        .map(defaultMessage -> new Error(parameterName, defaultMessage, Error.Type.COOKIE))
+                        .forEach(errorList::add);
             }
 
             @Override
             public void matrixVariable(MatrixVariable matrixVariable, ParameterValidationResult result) {
                 String parameterName = result.getMethodParameter().getParameterName();
                 result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
-                        .map(defaultMessage -> new ParamError(parameterName, defaultMessage, ParamErrorType.PARAMETER))
-                        .forEach(paramErrorList::add);
+                        .map(defaultMessage -> new Error(parameterName, defaultMessage, Error.Type.PARAMETER))
+                        .forEach(errorList::add);
             }
 
             @Override
@@ -68,7 +67,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
             @Override
             public void requestBody(RequestBody requestBody, ParameterErrors errors) {
                 log.info("errors = {}", errors);
-                errors.getAllErrors().stream().map(ParamError::new).forEach(paramErrorList::add);
+                errors.getAllErrors().stream().map(Error::new).forEach(errorList::add);
             }
 
             @Override
@@ -81,8 +80,8 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
                 log.info("result = {}", result);
                 String parameterName = result.getMethodParameter().getParameterName();
                 result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
-                        .map(defaultMessage -> new ParamError(parameterName, defaultMessage, ParamErrorType.PARAMETER))
-                        .forEach(paramErrorList::add);
+                        .map(defaultMessage -> new Error(parameterName, defaultMessage, Error.Type.PARAMETER))
+                        .forEach(errorList::add);
             }
 
             @Override
@@ -102,7 +101,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
             }
         });
         NestedProblemDetail nestedProblemDetail = new NestedProblemDetail(ex.getBody());
-        nestedProblemDetail.setErrors(paramErrorList);
+        nestedProblemDetail.setErrors(errorList);
         return handleExceptionInternal(ex, nestedProblemDetail, headers, status, request);
     }
 

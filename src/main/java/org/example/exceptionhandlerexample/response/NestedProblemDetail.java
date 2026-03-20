@@ -14,7 +14,7 @@ public class NestedProblemDetail extends ProblemDetail {
 
     private String errorCode;
 
-    private List<ParamError> errors;
+    private List<Error> errors;
 
     public NestedProblemDetail(ProblemDetail problemDetail) {
         super(problemDetail);

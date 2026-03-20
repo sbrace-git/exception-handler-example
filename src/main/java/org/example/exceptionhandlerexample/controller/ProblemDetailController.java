@@ -18,7 +18,7 @@ public class ProblemDetailController {
 
     @GetMapping("/param")
     public void get(@RequestParam Integer id) {
-        log.info("id = {}", id);
+        log.info("id: {}", id);
     }
 
     @PutMapping(path = "/consume-json", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -76,5 +76,10 @@ public class ProblemDetailController {
     public void matrixVariable(@PathVariable String id,
                                @MatrixVariable @Size(max = 2, message = "最大长度是 2") List<String> list) {
         log.info("id: {}, list: {}", id, list);
+    }
+
+    @GetMapping("/model-attribute")
+    public void modelAttribute(ProblemDetailRequest problemDetailRequest) {
+        log.info("problemRequest: {}", problemDetailRequest);
     }
 }

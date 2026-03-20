@@ -13,22 +13,27 @@ import org.springframework.validation.ObjectError;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class ParamError {
-    private String type;
+public class Error {
+    private Type type;
     private String field;
     private String message;
 
-    public ParamError(ObjectError objectError) {
+    public Error(ObjectError objectError) {
         if (objectError instanceof FieldError fieldError) {
             this.field = fieldError.getField();
         }
         this.message = objectError.getDefaultMessage();
-        this.type = ParamErrorType.PARAMETER;
+        this.type = Type.PARAMETER;
     }
 
-    public ParamError(String field, String message, String type) {
+    public Error(String field, String message, Type type) {
         this.field = field;
         this.message = message;
         this.type = type;
+    }
+
+    public enum Type {
+        PARAMETER,
+        COOKIE,
     }
 }

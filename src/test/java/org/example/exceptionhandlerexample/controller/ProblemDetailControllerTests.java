@@ -2,9 +2,8 @@ package org.example.exceptionhandlerexample.controller;
 
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptionhandlerexample.response.Error;
 import org.example.exceptionhandlerexample.response.NestedProblemDetail;
-import org.example.exceptionhandlerexample.response.ParamError;
-import org.example.exceptionhandlerexample.response.ParamErrorType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -214,10 +213,10 @@ class ProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).containsExactlyInAnyOrder(
-                new ParamError("name", "姓名长度范围 6-10", ParamErrorType.PARAMETER),
-                new ParamError("age", "年龄不可为空", ParamErrorType.PARAMETER),
-                new ParamError("password", "密码与确认密码不一致", ParamErrorType.PARAMETER),
-                new ParamError("confirmPassword", "密码与确认密码不一致", ParamErrorType.PARAMETER)
+                new Error("name", "姓名长度范围 6-10", Error.Type.PARAMETER),
+                new Error("age", "年龄不可为空", Error.Type.PARAMETER),
+                new Error("password", "密码与确认密码不一致", Error.Type.PARAMETER),
+                new Error("confirmPassword", "密码与确认密码不一致", Error.Type.PARAMETER)
         );
     }
 
@@ -236,7 +235,7 @@ class ProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new ParamError("name", "姓名长度最小是 2", ParamErrorType.COOKIE));
+                .isEqualTo(new Error("name", "姓名长度最小是 2", Error.Type.COOKIE));
     }
 
     @Test
@@ -254,6 +253,12 @@ class ProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new ParamError("list", "最大长度是 2", ParamErrorType.PARAMETER));
+                .isEqualTo(new Error("list", "最大长度是 2", Error.Type.PARAMETER));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionModelAttribute() {
+        String url = BASE_PATH + "/model-attribute";
+
     }
 }
