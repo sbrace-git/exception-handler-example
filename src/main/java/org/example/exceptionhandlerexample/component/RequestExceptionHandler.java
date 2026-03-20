@@ -41,7 +41,6 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
             @Override
             public void cookieValue(CookieValue cookieValue, ParameterValidationResult result) {
-                log.info("result = {}", result);
                 String parameterName = result.getMethodParameter().getParameterName();
                 result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
                         .map(defaultMessage -> new ParamError(parameterName, defaultMessage, ParamErrorType.COOKIE))

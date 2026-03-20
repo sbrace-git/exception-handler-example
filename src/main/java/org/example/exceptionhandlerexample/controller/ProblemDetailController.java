@@ -2,6 +2,7 @@ package org.example.exceptionhandlerexample.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.reuqest.problem.ProblemDetailRequest;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,37 +22,37 @@ public class ProblemDetailController {
 
     @PutMapping(path = "/consume-json", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void putConsumeJson(ProblemDetailRequest problemDetailRequest) {
-        log.info("problemRequest = {}", problemDetailRequest);
+        log.info("problemRequest: {}", problemDetailRequest);
     }
 
     @PutMapping(path = "/produce-json", produces = MediaType.APPLICATION_JSON_VALUE)
     public void putProduceJson(ProblemDetailRequest problemDetailRequest) {
-        log.info("problemRequest = {}", problemDetailRequest);
+        log.info("problemRequest: {}", problemDetailRequest);
     }
 
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Integer iid) {
-        log.info("iid = {}", iid);
+        log.info("iid: {}", iid);
     }
 
     @PutMapping("/file")
     public void file(@RequestPart MultipartFile file) {
-        log.info("file = {}", file);
+        log.info("file: {}", file);
     }
 
     @GetMapping("/matrix/{id}")
     public void matrix(@PathVariable String id, @MatrixVariable List<String> list) {
-        log.info("id = {}, list = {}", id, list);
+        log.info("id: {}, list: {}", id, list);
     }
 
     @GetMapping("/cookie")
     public void cookie(@CookieValue String cookieValue) {
-        log.info("cookieValue = {}", cookieValue);
+        log.info("cookieValue: {}", cookieValue);
     }
 
     @GetMapping("/header")
     public void header(@RequestHeader String header) {
-        log.info("header = {}", header);
+        log.info("header: {}", header);
     }
 
     @GetMapping(path = "/unsatisfied", params = {"type=1", "exist", "!debug"})
@@ -61,6 +62,12 @@ public class ProblemDetailController {
 
     @PostMapping("/create")
     public void create(@RequestBody @Validated ProblemDetailRequest problemDetailRequest) {
-        log.info("problemRequest = {}", problemDetailRequest);
+        log.info("problemRequest: {}", problemDetailRequest);
+    }
+
+    @GetMapping(value = "/cookie-value")
+    public String cookieValue(@CookieValue @Length(min = 2, message = "姓名长度最小是 2") String name) {
+        log.info("name: {}", name);
+        return name;
     }
 }

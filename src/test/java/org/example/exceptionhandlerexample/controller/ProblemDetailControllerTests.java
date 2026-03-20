@@ -1,5 +1,6 @@
 package org.example.exceptionhandlerexample.controller;
 
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.response.NestedProblemDetail;
 import org.example.exceptionhandlerexample.response.ParamError;
@@ -27,9 +28,11 @@ class ProblemDetailControllerTests {
     @Autowired
     private MockMvcTester mockMvcTester;
 
+    private static final String BASE_PATH = "/problem-detail";
+
     @Test
     void httpRequestMethodNotSupportedExceptionTest() {
-        String url = "/problem-detail/param";
+        String url = BASE_PATH + "/param";
         MvcTestResult result = mockMvcTester.post().uri(url).exchange();
         assertThat(result)
                 .hasStatus(METHOD_NOT_ALLOWED)
@@ -46,7 +49,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void httpMediaTypeNotSupportedExceptionTest() {
-        String url = "/problem-detail/consume-json";
+        String url = BASE_PATH + "/consume-json";
         MvcTestResult result = mockMvcTester.put().uri(url).exchange();
         assertThat(result)
                 .hasStatus(UNSUPPORTED_MEDIA_TYPE)
@@ -63,7 +66,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void httpMediaTypeNotAcceptableExceptionTest() {
-        String url = "/problem-detail/produce-json";
+        String url = BASE_PATH + "/produce-json";
         MvcTestResult result = mockMvcTester.put().uri(url)
                 .header(ACCEPT, APPLICATION_XML_VALUE).exchange();
         assertThat(result)
@@ -81,7 +84,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void missingPathVariableExceptionTest() {
-        String url = "/problem-detail/delete/1";
+        String url = BASE_PATH + "/delete/1";
         MvcTestResult result = mockMvcTester.delete().uri(url).exchange();
         assertThat(result)
                 .hasStatus(INTERNAL_SERVER_ERROR)
@@ -97,7 +100,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void missingServletRequestParameterExceptionTest() {
-        String url = "/problem-detail/param";
+        String url = BASE_PATH + "/param";
         MvcTestResult result = mockMvcTester.get().uri(url).exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
@@ -113,7 +116,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void missingServletRequestPartExceptionTest() throws Exception {
-        String url = "/problem-detail/file";
+        String url = BASE_PATH + "/file";
         MvcTestResult result = mockMvcTester.put().multipart().contentType(MULTIPART_FORM_DATA).uri(url).exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
@@ -129,7 +132,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void servletRequestBindingExceptionMissingMatrixVariableExceptionTest() {
-        String url = "/problem-detail/matrix/abc;list1=a,b,c";
+        String url = BASE_PATH + "/matrix/abc;list1=a,b,c";
         MvcTestResult result = mockMvcTester.get().uri(url).exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
@@ -145,7 +148,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void servletRequestBindingExceptionMissingRequestCookieExceptionTest() {
-        String url = "/problem-detail/cookie";
+        String url = BASE_PATH + "/cookie";
         MvcTestResult result = mockMvcTester.get().uri(url).exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
@@ -161,7 +164,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void servletRequestBindingExceptionMissingRequestHeaderExceptionTest() {
-        String url = "/problem-detail/header";
+        String url = BASE_PATH + "/header";
         MvcTestResult result = mockMvcTester.get().uri(url).exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
@@ -177,7 +180,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void servletRequestBindingExceptionUnsatisfiedServletRequestParameterExceptionTest() {
-        String url = "/problem-detail/unsatisfied";
+        String url = BASE_PATH + "/unsatisfied";
         MvcTestResult result = mockMvcTester.get().uri(url).param("type", "1").exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
@@ -193,7 +196,7 @@ class ProblemDetailControllerTests {
 
     @Test
     void methodArgumentNotValidExceptionTest() {
-        String url = "/problem-detail/create";
+        String url = BASE_PATH + "/create";
         MvcTestResult result = mockMvcTester.post().uri(url).contentType(APPLICATION_JSON).content("""
                                 {
                                     "name": "abc",
@@ -215,5 +218,23 @@ class ProblemDetailControllerTests {
                 .contains(new ParamError("age", "年龄不可为空", ParamErrorType.PARAMETER))
                 .contains(new ParamError("password", "密码与确认密码不一致", ParamErrorType.PARAMETER))
                 .contains(new ParamError("confirmPassword", "密码与确认密码不一致", ParamErrorType.PARAMETER));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionCookieValue() {
+        String url = BASE_PATH + "/cookie-value";
+        MvcTestResult result = mockMvcTester.get().uri(url).cookie(new Cookie("name", "a")).exchange();
+        assertThat(result)
+                .hasStatus(BAD_REQUEST)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(url));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).hasSize(1)
+                .containsOnly(new ParamError("name", "姓名长度最小是 2",ParamErrorType.COOKIE));
     }
 }
