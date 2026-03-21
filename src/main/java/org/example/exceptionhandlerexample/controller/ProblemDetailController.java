@@ -1,10 +1,9 @@
 package org.example.exceptionhandlerexample.controller;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.reuqest.problem.ProblemDetailRequest;
+import org.example.exceptionhandlerexample.reuqest.valid.annocation.CheckPassword;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -91,7 +90,8 @@ public class ProblemDetailController {
     }
 
     @PostMapping("/request-body")
-    public void requestBody(@RequestBody @Validated ProblemDetailRequest problemDetailRequest) {
+    public void requestBody(@RequestBody(required = false)
+                            @CheckPassword(message = "密码不能是空") ProblemDetailRequest problemDetailRequest) {
         log.info("problemDetailRequest: {}", problemDetailRequest);
     }
 

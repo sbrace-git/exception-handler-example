@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 import org.springframework.validation.method.ParameterErrors;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
@@ -296,17 +295,22 @@ class ProblemDetailControllerTests {
                 .isEqualTo(new Error("id", "id 最小长度是 2", Error.Type.PARAMETER));
     }
 
-    /**
-     * TODO
-     * {@link ProblemDetailController#requestBody(ProblemDetailRequest)}
-     * {@link org.example.exceptionhandlerexample.component.RequestExceptionHandler#handleHandlerMethodValidationException(HandlerMethodValidationException, HttpHeaders, HttpStatusCode, WebRequest)}
-     * {@link HandlerMethodValidationException.Visitor#requestBody(RequestBody, ParameterErrors)}
-     */
     @Test
-    @Disabled
     void handlerMethodValidationExceptionRequestBody() {
         String uri = BASE_PATH + "/request-body";
-        mockMvcTester.get().uri(uri).exchange();
+        MvcTestResult result = mockMvcTester.post().uri(uri).exchange();
+        assertThat(result)
+                .hasStatus(BAD_REQUEST)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error("password", "密码不能是空", Error.Type.PARAMETER));
     }
 
     @Test
