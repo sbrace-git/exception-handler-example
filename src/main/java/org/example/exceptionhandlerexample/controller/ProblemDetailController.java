@@ -81,7 +81,7 @@ public class ProblemDetailController {
     }
 
     @GetMapping("/model-attribute")
-    public void modelAttribute(ProblemDetailRequest problemDetailRequest) {
+    public void modelAttribute(@Validated ProblemDetailRequest problemDetailRequest) {
         log.info("problemRequest: {}", problemDetailRequest);
     }
 
@@ -98,5 +98,10 @@ public class ProblemDetailController {
     @GetMapping("/request-header")
     public void requestHeader(@RequestHeader @Length(min = 2, message = "最小长度是 2") String headerValue) {
         log.info("headerValue: {}", headerValue);
+    }
+
+    @GetMapping("/request-part")
+    public void requestPart(@RequestPart MultipartFile file) {
+        log.info("file: {}", file);
     }
 }
