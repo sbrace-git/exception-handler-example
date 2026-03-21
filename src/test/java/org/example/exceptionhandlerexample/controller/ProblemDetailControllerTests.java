@@ -7,6 +7,7 @@ import org.example.exceptionhandlerexample.response.NestedProblemDetail;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
@@ -326,5 +327,24 @@ class ProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
                 .isEqualTo(new Error("headerValue", "最小长度是 2", Error.Type.HEADER));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionRequestPart() {
+        String uri = BASE_PATH + "/request-part";
+        MvcTestResult result = mockMvcTester.get().uri(uri)
+                .header(HttpHeaders.CONTENT_TYPE, "multipart/form-data").exchange();
+        assertThat(result)
+                .hasStatus(BAD_REQUEST)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error("file", "文件不能为空", Error.Type.PARAMETER));
     }
 }

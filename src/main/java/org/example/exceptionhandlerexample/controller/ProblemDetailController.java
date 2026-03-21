@@ -3,6 +3,7 @@ package org.example.exceptionhandlerexample.controller;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.reuqest.problem.ProblemDetailRequest;
+import org.example.exceptionhandlerexample.reuqest.valid.annocation.CheckMultipartFile;
 import org.example.exceptionhandlerexample.reuqest.valid.annocation.CheckPassword;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.MediaType;
@@ -100,7 +101,12 @@ public class ProblemDetailController {
     }
 
     @GetMapping("/request-part")
-    public void requestPart(@RequestPart MultipartFile file) {
+    public void requestPart(@RequestPart(required = false)
+                            @CheckMultipartFile(
+                                    extensionIncludeMessage = "文件类型不支持",
+                                    extensionInclude = "txt",
+                                    requiredMessage = "文件不能为空"
+                            ) MultipartFile file) {
         log.info("file: {}", file);
     }
 }
