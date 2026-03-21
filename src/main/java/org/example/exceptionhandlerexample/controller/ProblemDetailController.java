@@ -92,7 +92,6 @@ public class ProblemDetailController {
 
     @PostMapping("/request-body")
     public void requestBody(@RequestBody @Validated ProblemDetailRequest problemDetailRequest) {
-
-
+        log.info("problemDetailRequest: {}", problemDetailRequest);
     }
 }

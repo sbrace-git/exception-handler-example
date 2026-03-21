@@ -4,12 +4,20 @@ import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.response.Error;
 import org.example.exceptionhandlerexample.response.NestedProblemDetail;
+import org.example.exceptionhandlerexample.reuqest.problem.ProblemDetailRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
+import org.springframework.validation.method.ParameterErrors;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -256,7 +264,12 @@ class ProblemDetailControllerTests {
                 .isEqualTo(new Error("list", "最大长度是 2", Error.Type.PARAMETER));
     }
 
-    //TODO
+    /**
+     * TODO
+     * {@link ProblemDetailController#modelAttribute(ProblemDetailRequest)}
+     * {@link org.example.exceptionhandlerexample.component.RequestExceptionHandler#handleHandlerMethodValidationException(HandlerMethodValidationException, HttpHeaders, HttpStatusCode, WebRequest)}
+     * {@link HandlerMethodValidationException.Visitor#modelAttribute(ModelAttribute, ParameterErrors)}
+     */
     @Test
     void handlerMethodValidationExceptionModelAttribute() {
         String url = BASE_PATH + "/model-attribute";
@@ -281,4 +294,15 @@ class ProblemDetailControllerTests {
                 .isEqualTo(new Error("id", "id 最小长度是 2", Error.Type.PARAMETER));
     }
 
+    /**
+     * TODO
+     * {@link ProblemDetailController#requestBody(ProblemDetailRequest)}
+     * {@link org.example.exceptionhandlerexample.component.RequestExceptionHandler#handleHandlerMethodValidationException(HandlerMethodValidationException, HttpHeaders, HttpStatusCode, WebRequest)}
+     * {@link HandlerMethodValidationException.Visitor#requestBody(RequestBody, ParameterErrors)}
+     */
+    @Test
+    void handlerMethodValidationExceptionRequestBody() {
+        String url = BASE_PATH + "/request-body";
+        mockMvcTester.get().uri(url).exchange();
+    }
 }

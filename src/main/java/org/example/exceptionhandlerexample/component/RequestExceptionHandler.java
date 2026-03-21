@@ -34,7 +34,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected @Nullable ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    public @Nullable ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         List<Error> errorList = new ArrayList<>();
         ex.visitResults(new HandlerMethodValidationException.Visitor() {
 
@@ -50,7 +50,6 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
             @Override
             public void modelAttribute(@Nullable ModelAttribute modelAttribute, ParameterErrors errors) {
-                //TODO: without test
                 processParameterErrors(errors);
             }
 
