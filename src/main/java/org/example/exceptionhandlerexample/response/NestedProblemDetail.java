@@ -1,9 +1,14 @@
 package org.example.exceptionhandlerexample.response;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.ProblemDetail;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class NestedProblemDetail extends ProblemDetail {
 
     private String errorCode;
@@ -18,19 +23,10 @@ public class NestedProblemDetail extends ProblemDetail {
         this.errorCode = ErrorCode.httpStatusValue(problemDetail.getStatus());
     }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public List<Error> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(List<Error> errors) {
-        this.errors = errors;
+    @Override
+    protected @NonNull String initToStringContent() {
+        return super.initToStringContent() +
+                ", errorCode='" + errorCode + "'" +
+                ", errors=" + errors;
     }
 }

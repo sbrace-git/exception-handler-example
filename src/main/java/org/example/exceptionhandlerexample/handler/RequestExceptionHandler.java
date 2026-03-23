@@ -1,11 +1,11 @@
 package org.example.exceptionhandlerexample.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.response.Error;
 import org.example.exceptionhandlerexample.response.ErrorCode;
 import org.example.exceptionhandlerexample.response.NestedProblemDetail;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -22,10 +22,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(RequestExceptionHandler.class);
 
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -41,57 +40,57 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
         ex.visitResults(new HandlerMethodValidationException.Visitor() {
 
             @Override
-            public void cookieValue(CookieValue cookieValue, ParameterValidationResult result) {
+            public void cookieValue(@NonNull CookieValue cookieValue, @NonNull ParameterValidationResult result) {
                 processParameterValidationResult(result, getParameterName(result), Error.Type.COOKIE);
             }
 
             @Override
-            public void matrixVariable(MatrixVariable matrixVariable, ParameterValidationResult result) {
+            public void matrixVariable(@NonNull MatrixVariable matrixVariable, @NonNull ParameterValidationResult result) {
                 processParameterValidationResult(result, getParameterName(result), Error.Type.PARAMETER);
             }
 
             @Override
-            public void modelAttribute(@Nullable ModelAttribute modelAttribute, ParameterErrors errors) {
+            public void modelAttribute(@Nullable ModelAttribute modelAttribute, @NonNull ParameterErrors errors) {
                 processParameterErrors(errors);
             }
 
             @Override
-            public void pathVariable(PathVariable pathVariable, ParameterValidationResult result) {
+            public void pathVariable(@NonNull PathVariable pathVariable, @NonNull ParameterValidationResult result) {
                 processParameterValidationResult(result, getParameterName(result), Error.Type.PARAMETER);
             }
 
             @Override
-            public void requestBody(RequestBody requestBody, ParameterErrors errors) {
+            public void requestBody(@NonNull RequestBody requestBody, @NonNull ParameterErrors errors) {
                 processParameterErrors(errors);
             }
 
             @Override
-            public void requestHeader(RequestHeader requestHeader, ParameterValidationResult result) {
+            public void requestHeader(@NonNull RequestHeader requestHeader, @NonNull ParameterValidationResult result) {
                 processParameterValidationResult(result, getParameterName(result), Error.Type.HEADER);
             }
 
             @Override
-            public void requestParam(@Nullable RequestParam requestParam, ParameterValidationResult result) {
+            public void requestParam(@Nullable RequestParam requestParam, @NonNull ParameterValidationResult result) {
                 processParameterValidationResult(result, getParameterName(result), Error.Type.PARAMETER);
             }
 
             @Override
-            public void requestPart(RequestPart requestPart, ParameterErrors errors) {
+            public void requestPart(@NonNull RequestPart requestPart, @NonNull ParameterErrors errors) {
                 processParameterErrors(errors);
             }
 
             @Override
-            public void other(ParameterValidationResult result) {
+            public void other(@NonNull ParameterValidationResult result) {
                 /*
                   Annotation[] parameterAnnotations = result.getMethodParameter().getParameterAnnotations();
                   @Value @SessionAttribute @RequestAttribute ...
                  */
                 result.getResolvableErrors().forEach(error ->
-                        logger.error("codes: {}, defaultMessage: {}", error.getCodes(), error.getDefaultMessage()));
+                        log.error("codes: {}, defaultMessage: {}", error.getCodes(), error.getDefaultMessage()));
             }
 
             @Override
-            public void requestBodyValidationResult(RequestBody requestBody, ParameterValidationResult result) {
+            public void requestBodyValidationResult(@NonNull RequestBody requestBody, @NonNull ParameterValidationResult result) {
                 processParameterValidationResult(result, null, Error.Type.PARAMETER);
             }
 
@@ -103,7 +102,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
                                                           String parameterName,
                                                           Error.Type errorType) {
                 result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage)
-                        .map(defaultMessage -> new Error(parameterName, defaultMessage, errorType))
+                        .map(defaultMessage -> new Error(errorType, parameterName, defaultMessage))
                         .forEach(errorList::add);
             }
 
@@ -117,7 +116,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+    protected @NonNull ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         switch (body) {
             case null -> {
                 NestedProblemDetail nestedProblemDetail = new NestedProblemDetail();
@@ -130,14 +129,14 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
                 }
             }
             case ProblemDetail problemDetail -> body = new NestedProblemDetail(problemDetail);
-            default -> logger.error("body class: {}", body.getClass());
+            default -> log.error("body class: {}", body.getClass());
         }
 
         return super.createResponseEntity(body, headers, statusCode, request);
     }
 
     @Override
-    protected ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, @Nullable String detailMessageCode, Object @Nullable [] detailMessageArguments, WebRequest request) {
+    protected @NonNull ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, @Nullable String detailMessageCode, Object @Nullable [] detailMessageArguments, WebRequest request) {
         ProblemDetail problemDetail = super.createProblemDetail(ex, status, defaultDetail, detailMessageCode, detailMessageArguments, request);
         return new NestedProblemDetail(problemDetail);
     }

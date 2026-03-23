@@ -222,10 +222,10 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).containsExactlyInAnyOrder(
-                new Error("name", "姓名长度范围 6-10", Error.Type.PARAMETER),
-                new Error("age", "年龄不可为空", Error.Type.PARAMETER),
-                new Error("password", "密码与确认密码不一致", Error.Type.PARAMETER),
-                new Error("confirmPassword", "密码与确认密码不一致", Error.Type.PARAMETER)
+                new Error(Error.Type.PARAMETER, "name", "姓名长度范围 6-10"),
+                new Error(Error.Type.PARAMETER, "age", "年龄不可为空"),
+                new Error(Error.Type.PARAMETER, "password", "密码与确认密码不一致"),
+                new Error(Error.Type.PARAMETER, "confirmPassword", "密码与确认密码不一致")
         );
     }
 
@@ -244,7 +244,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error("name", "姓名长度最小是 2", Error.Type.COOKIE));
+                .isEqualTo(new Error(Error.Type.COOKIE, "name", "姓名长度最小是 2"));
     }
 
     @Test
@@ -262,7 +262,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error("list", "最大长度是 2", Error.Type.PARAMETER));
+                .isEqualTo(new Error(Error.Type.PARAMETER, "list", "最大长度是 2"));
     }
 
     @Test
@@ -280,7 +280,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error("password", "密码不能是空", Error.Type.PARAMETER));
+                .isEqualTo(new Error(Error.Type.PARAMETER, "password", "密码不能是空"));
     }
 
     @Test
@@ -298,7 +298,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error("id", "id 最小长度是 2", Error.Type.PARAMETER));
+                .isEqualTo(new Error(Error.Type.PARAMETER, "id", "id 最小长度是 2"));
     }
 
     @Test
@@ -316,7 +316,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error("password", "密码不能是空", Error.Type.PARAMETER));
+                .isEqualTo(new Error(Error.Type.PARAMETER, "password", "密码不能是空"));
     }
 
     @Test
@@ -334,7 +334,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error("headerValue", "最小长度是 2", Error.Type.HEADER));
+                .isEqualTo(new Error(Error.Type.HEADER, "headerValue", "最小长度是 2"));
     }
 
     @Test
@@ -352,9 +352,9 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).containsExactlyInAnyOrder(
-                new Error("param", "参数不能为空", Error.Type.PARAMETER),
-                new Error("param2", "参数2不能为空", Error.Type.PARAMETER),
-                new Error("param2", "参数2不能为null", Error.Type.PARAMETER)
+                new Error(Error.Type.PARAMETER, "param", "参数不能为空"),
+                new Error(Error.Type.PARAMETER, "param2", "参数2不能为空"),
+                new Error(Error.Type.PARAMETER, "param2", "参数2不能为null")
         );
     }
 
@@ -374,7 +374,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error("file", "文件不能为空", Error.Type.PARAMETER));
+                .isEqualTo(new Error(Error.Type.PARAMETER, "file", "文件不能为空"));
     }
 
     @Test
@@ -411,7 +411,7 @@ class FluxMvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error(null, "元素不能包含空", Error.Type.PARAMETER));
+                .isEqualTo(new Error(Error.Type.PARAMETER, null, "元素不能包含空"));
 
     }
 
