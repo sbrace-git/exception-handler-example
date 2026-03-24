@@ -5,12 +5,16 @@ import jakarta.servlet.AsyncListener;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptionhandlerexample.controller.MvcProblemDetailController;
+import org.example.exceptionhandlerexample.endpoint.DemoEndpoint;
 import org.example.exceptionhandlerexample.response.Error;
 import org.example.exceptionhandlerexample.response.NestedProblemDetail;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockAsyncContext;
@@ -497,5 +501,47 @@ class MvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(CONTENT_TOO_LARGE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(CONTENT_TOO_LARGE.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).isNull();
+    }
+
+    @Nested
+    @TestPropertySource(properties = {
+            "spring.mvc.apiversion.use.header=API-Version",
+            "spring.mvc.apiversion.supported=1"
+    })
+    class ApiVersionTest {
+        @Test
+        void errorResponseExceptionInvalidApiVersionException() {
+            String uri = BASE_PATH + "/param";
+            MvcTestResult result = mockMvcTester.get().uri(uri).param("id", "1")
+                    .header("API-Version", "2").exchange();
+            assertThat(result)
+                    .hasStatus(BAD_REQUEST)
+                    .hasContentType(APPLICATION_PROBLEM_JSON);
+            NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                    .convertTo(NestedProblemDetail.class).isNotNull().actual();
+            log.info("nestedProblemDetail: {}", nestedProblemDetail);
+            assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid API version: '2.0.0'.");
+            assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+            assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+            assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+            assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        }
+
+        @Test
+        void errorResponseExceptionMissingApiVersionException() {
+            String uri = BASE_PATH + "/param";
+            MvcTestResult result = mockMvcTester.get().uri(uri).param("id", "1").exchange();
+            assertThat(result)
+                    .hasStatus(BAD_REQUEST)
+                    .hasContentType(APPLICATION_PROBLEM_JSON);
+            NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                    .convertTo(NestedProblemDetail.class).isNotNull().actual();
+            log.info("nestedProblemDetail: {}", nestedProblemDetail);
+            assertThat(nestedProblemDetail.getDetail()).isEqualTo("API version is required.");
+            assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+            assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+            assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+            assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        }
     }
 }
