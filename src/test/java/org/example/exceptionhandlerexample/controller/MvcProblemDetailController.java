@@ -244,4 +244,9 @@ public class MvcProblemDetailController {
         MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
         throw new WebExchangeBindException(methodParameters[0], bindingResult);
     }
+
+    @GetMapping("/missing-request-value-mvc")
+    public void missingRequestValueMvc(String id) throws org.springframework.web.bind.MissingRequestValueException {
+        throw new org.springframework.web.bind.MissingRequestValueException("id is required", true);
+    }
 }
