@@ -592,4 +592,24 @@ class MvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(NOT_ACCEPTABLE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
     }
+
+    @Test
+    void errorResponseExceptionPayloadTooLargeException() {
+        String uri = BASE_PATH + "/payload-too-large";
+        MockMultipartFile file = new MockMultipartFile("file", "test-upload.txt",
+                "text/plain", "test content".getBytes(StandardCharsets.UTF_8));
+        MvcTestResult result = mockMvcTester.perform(multipart(uri).file(file));
+        assertThat(result)
+                .hasStatus(CONTENT_TOO_LARGE)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        log.info("nestedProblemDetail: {}", nestedProblemDetail);
+        assertThat(nestedProblemDetail.getDetail()).isNull();
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00413");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(CONTENT_TOO_LARGE.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(CONTENT_TOO_LARGE.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).isNull();
+    }
 }

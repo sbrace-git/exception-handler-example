@@ -25,6 +25,9 @@ import org.springframework.web.server.ContentTooLargeException;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.server.MissingRequestValueException;
 import org.springframework.web.server.NotAcceptableStatusException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.PayloadTooLargeException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -201,5 +204,11 @@ public class MvcProblemDetailController {
     @PostMapping("/file-max-size")
     public void fileMaxSize(@RequestPart MultipartFile file) {
         log.info("file.size: {}", file.getSize());
+    }
+
+    @PostMapping("/payload-too-large")
+    public void payloadTooLarge(@RequestPart MultipartFile file) {
+        log.info("file: {}", file);
+        throw new PayloadTooLargeException(new RuntimeException("payload too large"));
     }
 }
