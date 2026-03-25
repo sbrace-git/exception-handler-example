@@ -666,4 +666,31 @@ class MvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).isNull();
     }
+
+    @Test
+    void errorResponseExceptionWebExchangeBindException() {
+        String uri = BASE_PATH + "/web-exchange-bind";
+        MvcTestResult result = mockMvcTester.post().uri(uri).contentType(APPLICATION_JSON).content("""
+                                {
+                                    "name": "abc",
+                                    "password": "123"
+                                }
+                """).exchange();
+        assertThat(result)
+                .hasStatus(BAD_REQUEST)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid request content.");
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).containsExactlyInAnyOrder(
+                new Error(Error.Type.PARAMETER, "name", "姓名长度范围 6-10"),
+                new Error(Error.Type.PARAMETER, "age", "年龄不可为空"),
+                new Error(Error.Type.PARAMETER, "password", "密码与确认密码不一致"),
+                new Error(Error.Type.PARAMETER, "confirmPassword", "密码与确认密码不一致")
+        );
+    }
 }

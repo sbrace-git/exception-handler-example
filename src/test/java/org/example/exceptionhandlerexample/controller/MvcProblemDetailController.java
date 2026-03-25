@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -224,5 +226,22 @@ public class MvcProblemDetailController {
     public void unsupportedMediaType() {
         log.info("unsupported media type");
         throw new UnsupportedMediaTypeStatusException("unsupported media type");
+    }
+
+    @PostMapping("/web-exchange-bind")
+    public void webExchangeBind(@RequestBody @Validated ProblemDetailRequest problemDetailRequest, BindingResult bindingResult) throws Exception {
+        log.info("web exchange bind");
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (null == servletRequestAttributes) {
+            throw new MissingServletRequestParameterException("id", "String");
+        }
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        HandlerExecutionChain handlerExecutionChain = requestMappingHandlerMapping.getHandler(request);
+        if (null == handlerExecutionChain) {
+            throw new MissingServletRequestParameterException("id", "String");
+        }
+        HandlerMethod handlerMethod = (HandlerMethod) handlerExecutionChain.getHandler();
+        MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
+        throw new WebExchangeBindException(methodParameters[0], bindingResult);
     }
 }

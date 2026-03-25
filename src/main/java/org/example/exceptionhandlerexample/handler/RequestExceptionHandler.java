@@ -11,17 +11,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.method.ParameterErrors;
 import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -118,6 +121,14 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
     protected @Nullable ResponseEntity<Object> handleErrorResponseException(
             ErrorResponseException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        if (ex instanceof WebExchangeBindException exchangeBindException) {
+            ProblemDetail body = exchangeBindException.getBody();
+            BindingResult bindingResult = exchangeBindException.getBindingResult();
+            List<Error> errors = bindingResult.getAllErrors().stream().map(Error::new).toList();
+            NestedProblemDetail nestedProblemDetail = new NestedProblemDetail(body);
+            nestedProblemDetail.setErrors(errors);
+            return handleExceptionInternal(ex, nestedProblemDetail, headers, status, request);
+        }
         return handleExceptionInternal(ex, null, headers, status, request);
     }
 
