@@ -114,7 +114,7 @@ public class MvcProblemDetailController {
     }
 
     @PostMapping("/request-body")
-    public void requestBody(@CheckPassword(message = "密码不能是空") ProblemDetailRequest problemDetailRequest) {
+    public void requestBody(@RequestBody @CheckPassword(message = "密码不能是空") ProblemDetailRequest problemDetailRequest) {
         log.info("problemDetailRequest: {}", problemDetailRequest);
     }
 

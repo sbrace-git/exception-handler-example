@@ -325,7 +325,11 @@ class MvcProblemDetailControllerTests {
     @Test
     void handlerMethodValidationExceptionRequestBody() {
         String uri = BASE_PATH + "/request-body";
-        MvcTestResult result = mockMvcTester.post().uri(uri).exchange();
+        MvcTestResult result = mockMvcTester.post().uri(uri).content("""
+                {
+                    "name": "abc"
+                }
+                """).contentType(APPLICATION_JSON).exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
                 .hasContentType(APPLICATION_PROBLEM_JSON);
