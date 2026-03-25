@@ -14,7 +14,11 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @AutoConfigureTestRestTemplate
@@ -35,8 +39,7 @@ class ApiVersionTests {
     @RestController
     static class ApiVersionTestController {
         @GetMapping(path = "/api-version-test", version = "1")
-        void apiVersion1() {
-
+        void apiVersionTest1() {
         }
     }
 
@@ -47,10 +50,16 @@ class ApiVersionTests {
         httpHeaders.put("API-Version", List.of("2"));
         HttpEntity<Void> objectHttpEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<NestedProblemDetail> exchange = restTemplate.exchange(uri, HttpMethod.GET, objectHttpEntity, NestedProblemDetail.class);
-        HttpStatusCode statusCode = exchange.getStatusCode();
-        log.info("statusCode: {}", statusCode);
+        assertThat(exchange.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(exchange.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_PROBLEM_JSON);
         NestedProblemDetail nestedProblemDetail = exchange.getBody();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
+        assertThat(nestedProblemDetail).isNotNull();
+        assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid API version: '2.0.0'.");
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create("/api-version-test"));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
 
     }
 }
