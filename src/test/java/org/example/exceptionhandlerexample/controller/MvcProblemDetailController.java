@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ContentTooLargeException;
 import org.springframework.web.server.MethodNotAllowedException;
 import org.springframework.web.server.MissingRequestValueException;
+import org.springframework.web.server.NotAcceptableStatusException;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -190,6 +191,11 @@ public class MvcProblemDetailController {
     @GetMapping(path = "/api-version")
     public void apiVersion() {
         log.info("apiVersion");
+    }
+
+    @GetMapping("/not-acceptable-status")
+    public void notAcceptableStatus() {
+        throw new NotAcceptableStatusException(List.of(MediaType.APPLICATION_JSON));
     }
 
     @PostMapping("/file-max-size")
