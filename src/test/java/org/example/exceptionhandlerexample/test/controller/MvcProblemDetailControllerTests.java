@@ -688,6 +688,24 @@ class MvcProblemDetailControllerTests {
     }
 
     @Test
+    void errorResponseExceptionUnsatisfiedRequestParameterException() {
+        String uri = BASE_PATH + "/unsatisfied-request-param";
+        MvcTestResult result = mockMvcTester.get().uri(uri).exchange();
+        assertThat(result)
+                .hasStatus(BAD_REQUEST)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        log.info("nestedProblemDetail: {}", nestedProblemDetail);
+        assertThat(nestedProblemDetail.getDetail()).isNotNull();
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).isNull();
+    }
+
+    @Test
     void errorResponseExceptionUnsupportedMediaTypeStatusException() {
         String uri = BASE_PATH + "/unsupported-media-type";
         MvcTestResult result = mockMvcTester.post().uri(uri).exchange();

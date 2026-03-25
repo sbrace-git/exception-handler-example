@@ -28,8 +28,7 @@ import org.springframework.web.server.*;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -255,5 +254,14 @@ public class MvcProblemDetailController {
     public void servletRequestBinding() throws ServletRequestBindingException {
         log.info("servlet request binding");
         throw new ServletRequestBindingException("binding error");
+    }
+
+    @GetMapping("/unsatisfied-request-param")
+    public void unsatisfiedRequestParam() {
+        log.info("unsatisfied request param");
+        throw new UnsatisfiedRequestParameterException(
+                List.of("type=1", "exist"),
+                org.springframework.util.CollectionUtils.toMultiValueMap(Map.of())
+        );
     }
 }

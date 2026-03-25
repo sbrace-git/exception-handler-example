@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -119,6 +118,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, nestedProblemDetail, headers, status, request);
     }
 
+    @Override
     protected @Nullable ResponseEntity<Object> handleErrorResponseException(
             ErrorResponseException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         if (ex instanceof WebExchangeBindException exchangeBindException) {
