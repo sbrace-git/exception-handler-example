@@ -880,4 +880,22 @@ class MvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).isNull();
     }
+
+    @Test
+    void httpMessageNotWritableException() {
+        String uri = BASE_PATH + "/http-message-not-writable";
+        MvcTestResult result = mockMvcTester.get().uri(uri).exchange();
+        assertThat(result)
+                .hasStatus(INTERNAL_SERVER_ERROR)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(NestedProblemDetail.class).isNotNull().actual();
+        log.info("nestedProblemDetail: {}", nestedProblemDetail);
+        assertThat(nestedProblemDetail.getDetail()).isEqualTo("Failed to write request");
+        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00500");
+        assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
+        assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
+        assertThat(nestedProblemDetail.getErrors()).isNull();
+    }
 }
