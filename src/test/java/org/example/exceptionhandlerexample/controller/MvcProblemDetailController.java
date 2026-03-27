@@ -38,6 +38,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -337,5 +338,25 @@ public class MvcProblemDetailController {
     public void methodValidation() {
         String problemDetail = problemDetailService.createProblemDetail("");
         log.info("problemDetail: {}", problemDetail);
+    }
+
+    /**
+     * TODO: add test
+     * <p>
+     * {@link org.springframework.web.context.request.async.AsyncRequestNotUsableException}
+     */
+    @RequestMapping("/async-request-not-usable")
+    public DeferredResult<String> asyncRequestNotUsable() {
+        log.info("controller async request not usable");
+        DeferredResult<String> deferredResult = new DeferredResult<>(30000L);
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(10000);
+                deferredResult.setResult("Hello, World!");
+            } catch (InterruptedException e) {
+                log.error("interrupted", e);
+            }
+        });
+        return deferredResult;
     }
 }

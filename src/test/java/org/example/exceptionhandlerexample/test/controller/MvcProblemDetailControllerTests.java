@@ -9,6 +9,7 @@ import org.example.exceptionhandlerexample.controller.MvcProblemDetailController
 import org.example.exceptionhandlerexample.response.Error;
 import org.example.exceptionhandlerexample.response.NestedProblemDetail;
 import org.example.exceptionhandlerexample.service.ProblemDetailService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -919,5 +920,18 @@ class MvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
         assertThat(nestedProblemDetail.getErrors()).isNull();
+    }
+
+    /**
+     * TODO: Test async request not usable exception
+     * {@link org.springframework.web.context.request.async.AsyncRequestNotUsableException }
+     * {@link MvcProblemDetailController#asyncRequestNotUsable()}
+     */
+    @Test
+    @Disabled
+    void asyncRequestNotUsableException() {
+        String uri = BASE_PATH + "/async-request-not-usable";
+        MvcTestResult result = mockMvcTester.get().uri(uri).asyncExchange();
+        result.getRequest().getAsyncContext().complete();
     }
 }
