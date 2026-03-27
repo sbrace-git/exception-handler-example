@@ -343,15 +343,20 @@ public class MvcProblemDetailController {
 
     @GetMapping("/async-request-not-usable")
     public SseEmitter asyncRequestNotUsable() {
-        SseEmitter emitter = new SseEmitter(60000L);
+        SseEmitter emitter = new SseEmitter(5000L);
         CompletableFuture.runAsync(() -> {
             try {
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 10; i++) {
+                    Thread.sleep(100);
+                    log.info("emitter send: {}", i);
                     emitter.send("event " + i);
-                    Thread.sleep(500);
                 }
                 emitter.complete();
+            } catch (InterruptedException e) {
+                log.error("Thread sleep interrupted", e);
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
+                log.error("Emitter error: {}", e.getClass().getSimpleName(), e);
                 emitter.completeWithError(e);
             }
         });
