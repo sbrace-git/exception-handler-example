@@ -3,12 +3,10 @@ package com.github.sbracely.nested.problem.detail.response;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.ProblemDetail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NestedProblemDetail extends ProblemDetail {
-
-    @Nullable
-    private String errorCode;
 
     @Nullable
     private List<Error> errors;
@@ -18,15 +16,11 @@ public class NestedProblemDetail extends ProblemDetail {
 
     public NestedProblemDetail(ProblemDetail problemDetail) {
         super(problemDetail);
-        this.errorCode = ErrorCode.httpStatusValue(problemDetail.getStatus());
-    }
-
-    public @Nullable String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(@Nullable String errorCode) {
-        this.errorCode = errorCode;
+        if (problemDetail instanceof NestedProblemDetail nestedProblemDetail) {
+            if (nestedProblemDetail.errors != null) {
+                this.errors = new ArrayList<>(nestedProblemDetail.errors);
+            }
+        }
     }
 
     public @Nullable List<Error> getErrors() {
@@ -40,7 +34,6 @@ public class NestedProblemDetail extends ProblemDetail {
     @Override
     protected String initToStringContent() {
         return super.initToStringContent() +
-                ", errorCode='" + errorCode + "'" +
                 ", errors=" + errors;
     }
 }

@@ -61,7 +61,6 @@ class ApiVersionTests {
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail).isNotNull();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid API version: '2.0.0'.");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create("/api-version-test"));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());

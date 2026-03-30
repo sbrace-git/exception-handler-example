@@ -1,8 +1,6 @@
 package com.github.sbracely.nested.problem.detail.handler;
 
-import com.github.sbracely.nested.problem.detail.NestedProblemDetailProperties;
 import com.github.sbracely.nested.problem.detail.response.Error;
-import com.github.sbracely.nested.problem.detail.response.ErrorCode;
 import com.github.sbracely.nested.problem.detail.response.NestedProblemDetail;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -33,12 +31,6 @@ import java.util.List;
 public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(RequestExceptionHandler.class);
-
-    private final NestedProblemDetailProperties properties;
-
-    public RequestExceptionHandler(NestedProblemDetailProperties properties) {
-        this.properties = properties;
-    }
 
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -137,28 +129,6 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
             return handleExceptionInternal(ex, nestedProblemDetail, headers, status, request);
         }
         return handleExceptionInternal(ex, null, headers, status, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> createResponseEntity(@Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
-        if (null == body) {
-            NestedProblemDetail nestedProblemDetail = new NestedProblemDetail();
-            nestedProblemDetail.setErrorCode(ErrorCode.httpStatusCode(statusCode, properties.getErrorCodePrefix()));
-            body = nestedProblemDetail;
-        } else if (body instanceof NestedProblemDetail nestedProblemDetail) {
-            if (null == nestedProblemDetail.getErrorCode()) {
-                nestedProblemDetail.setErrorCode(ErrorCode.httpStatusCode(statusCode, properties.getErrorCodePrefix()));
-            }
-        } else if (body instanceof ProblemDetail problemDetail) {
-            body = new NestedProblemDetail(problemDetail);
-        }
-        return super.createResponseEntity(body, headers, statusCode, request);
-    }
-
-    @Override
-    protected ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, @Nullable String detailMessageCode, Object @Nullable [] detailMessageArguments, WebRequest request) {
-        ProblemDetail problemDetail = super.createProblemDetail(ex, status, defaultDetail, detailMessageCode, detailMessageArguments, request);
-        return new NestedProblemDetail(problemDetail);
     }
 
     @Override

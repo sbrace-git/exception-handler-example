@@ -15,6 +15,10 @@ public class Error {
     public Error() {
     }
 
+    public Error(String message) {
+        this.message = message;
+    }
+
     public Error(@Nullable Type type, @Nullable String field, @Nullable String message) {
         this.type = type;
         this.field = field;

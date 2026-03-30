@@ -39,7 +39,6 @@ public class MethodValidationExceptionTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failed");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00500");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());

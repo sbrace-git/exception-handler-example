@@ -19,8 +19,8 @@ public class NestedProblemDetailAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public RequestExceptionHandler requestExceptionHandler(NestedProblemDetailProperties properties) {
-        return new RequestExceptionHandler(properties);
+    public RequestExceptionHandler requestExceptionHandler() {
+        return new RequestExceptionHandler();
     }
 
 }

@@ -39,7 +39,6 @@ public class EndpointTests {
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).containsOnlyOnce("Missing parameters: ")
                 .contains("param1", "param2");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());

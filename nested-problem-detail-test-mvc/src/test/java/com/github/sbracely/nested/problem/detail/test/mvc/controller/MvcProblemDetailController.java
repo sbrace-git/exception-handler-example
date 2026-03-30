@@ -1,6 +1,8 @@
 package com.github.sbracely.nested.problem.detail.test.mvc.controller;
 
 import com.github.sbracely.nested.problem.detail.response.Error;
+import com.github.sbracely.nested.problem.detail.response.NestedProblemDetail;
+import com.github.sbracely.nested.problem.detail.test.mvc.exception.CustomizedException;
 import com.github.sbracely.nested.problem.detail.test.mvc.response.ProblemDetailResponse;
 import com.github.sbracely.nested.problem.detail.test.mvc.reuqest.ProblemDetailRequest;
 import com.github.sbracely.nested.problem.detail.test.mvc.reuqest.valid.annocation.CheckMultipartFile;
@@ -11,14 +13,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponseException;
@@ -310,7 +311,7 @@ public class MvcProblemDetailController {
     }
 
     @GetMapping("/method-argument-conversion-not-supported")
-    public void methodArgumentConversionNotSupported(@RequestParam Error error) {
+    public void methodArgumentConversionNotSupported(@RequestParam ProblemDetailRequest error) {
         log.info("error: {}", error);
     }
 
@@ -361,5 +362,15 @@ public class MvcProblemDetailController {
             }
         });
         return emitter;
+    }
+
+    @GetMapping("/customized")
+    public void customized() {
+        log.info("customized");
+        NestedProblemDetail nestedProblemDetail = new NestedProblemDetail();
+        nestedProblemDetail.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        nestedProblemDetail.setDetail("支付失败");
+        nestedProblemDetail.setErrors(Lists.newArrayList(new Error("余额不足"), new Error("支付频繁")));
+        throw new CustomizedException(HttpStatus.INTERNAL_SERVER_ERROR, nestedProblemDetail, new RuntimeException());
     }
 }

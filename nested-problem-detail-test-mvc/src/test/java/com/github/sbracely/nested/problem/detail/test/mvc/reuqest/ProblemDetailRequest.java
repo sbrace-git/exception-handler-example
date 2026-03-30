@@ -27,7 +27,4 @@ public class ProblemDetailRequest {
 
     private String password;
     private String confirmPassword;
-
-    // test for conversionNotSupportedException
-    private Error error;
 }

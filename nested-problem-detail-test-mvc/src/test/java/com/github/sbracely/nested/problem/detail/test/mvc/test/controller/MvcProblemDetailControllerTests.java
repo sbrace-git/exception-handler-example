@@ -60,7 +60,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList(HttpMethod.POST.name(), "not supported"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00405");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
@@ -77,7 +76,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList("null", "not supported"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00415");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.getReasonPhrase());
@@ -95,7 +93,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList(APPLICATION_JSON_VALUE, "Acceptable"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00406");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(NOT_ACCEPTABLE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
@@ -111,7 +108,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains("Required path variable");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00500");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
@@ -127,7 +123,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList("id", "is not present"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -143,7 +138,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList("file", "is not present"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -159,7 +153,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isNull();
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -176,7 +169,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList("list", "is not present"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -192,7 +184,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList("cookieValue", "is not present"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -208,7 +199,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains(Arrays.asList("header", "is not present"));
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -225,7 +215,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isNull();
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -242,7 +231,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid request parameters.");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -263,7 +251,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid request content.");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -285,7 +272,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -303,7 +289,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -321,7 +306,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -339,7 +323,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -361,7 +344,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -379,7 +361,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -397,7 +378,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -419,7 +399,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -437,7 +416,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -456,7 +434,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -478,7 +455,6 @@ class MvcProblemDetailControllerTests {
             NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                     .convertTo(NestedProblemDetail.class).isNotNull().actual();
             assertThat(nestedProblemDetail.getDetail()).contains("No endpoint");
-            assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00404");
             assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
             assertThat(nestedProblemDetail.getStatus()).isEqualTo(NOT_FOUND.value());
             assertThat(nestedProblemDetail.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
@@ -496,7 +472,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).contains("No static resource");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00404");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(NOT_FOUND.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
@@ -519,7 +494,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isNull();
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00503");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(SERVICE_UNAVAILABLE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(SERVICE_UNAVAILABLE.getReasonPhrase());
@@ -537,7 +511,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isNull();
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -557,7 +530,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isNull();
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00413");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(CONTENT_TOO_LARGE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(CONTENT_TOO_LARGE.getReasonPhrase());
@@ -579,7 +551,6 @@ class MvcProblemDetailControllerTests {
                     .convertTo(NestedProblemDetail.class).isNotNull().actual();
             log.info("nestedProblemDetail: {}", nestedProblemDetail);
             assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid API version: '1.0.0'.");
-            assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
             assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
             assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
             assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -596,7 +567,6 @@ class MvcProblemDetailControllerTests {
                     .convertTo(NestedProblemDetail.class).isNotNull().actual();
             log.info("nestedProblemDetail: {}", nestedProblemDetail);
             assertThat(nestedProblemDetail.getDetail()).isEqualTo("API version is required.");
-            assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
             assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
             assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
             assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -616,7 +586,6 @@ class MvcProblemDetailControllerTests {
         assertThat(nestedProblemDetail.getDetail()).startsWith("Supported methods: [")
                 .contains("GET", "POST").endsWith("]");
         assertThat(nestedProblemDetail.getTitle()).isEqualTo("Method Not Allowed");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00405");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
@@ -633,7 +602,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Required request param 'id' is not present.");
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -651,7 +619,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Acceptable representations: [application/json].");
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00406");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(NOT_ACCEPTABLE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
@@ -670,7 +637,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("payload too large");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00413");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(CONTENT_TOO_LARGE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(CONTENT_TOO_LARGE.getReasonPhrase());
@@ -688,7 +654,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("exception");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -706,7 +671,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("server error");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00500");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
@@ -724,7 +688,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("server web input error");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -742,7 +705,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isNotNull();
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -760,7 +722,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Could not parse Content-Type.");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00415");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(UNSUPPORTED_MEDIA_TYPE.getReasonPhrase());
@@ -782,7 +743,6 @@ class MvcProblemDetailControllerTests {
         NestedProblemDetail nestedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Invalid request content.");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -807,7 +767,6 @@ class MvcProblemDetailControllerTests {
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         // TODO custom detail
         assertThat(nestedProblemDetail.getDetail()).contains("Failed to convert 'null' with value: 'test-value'");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00500");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
@@ -825,7 +784,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).contains("Failed to convert");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00500");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
@@ -844,7 +802,6 @@ class MvcProblemDetailControllerTests {
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         // TODO custom detail
         assertThat(nestedProblemDetail.getDetail()).contains("Failed to convert 'null' with value: 'test'");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -862,7 +819,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).contains("Failed to convert").contains("'a'");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -882,7 +838,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Failed to read request");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00400");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
@@ -900,7 +855,6 @@ class MvcProblemDetailControllerTests {
                 .convertTo(NestedProblemDetail.class).isNotNull().actual();
         log.info("nestedProblemDetail: {}", nestedProblemDetail);
         assertThat(nestedProblemDetail.getDetail()).isEqualTo("Failed to write request");
-        assertThat(nestedProblemDetail.getErrorCode()).isEqualTo("A00500");
         assertThat(nestedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(nestedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
         assertThat(nestedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
