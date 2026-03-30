@@ -371,6 +371,6 @@ public class MvcProblemDetailController {
         nestedProblemDetail.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         nestedProblemDetail.setDetail("支付失败");
         nestedProblemDetail.setErrors(Lists.newArrayList(new Error("余额不足"), new Error("支付频繁")));
-        throw new CustomizedException(HttpStatus.INTERNAL_SERVER_ERROR, nestedProblemDetail, new RuntimeException());
+        throw new CustomizedException(HttpStatus.INTERNAL_SERVER_ERROR, nestedProblemDetail);
     }
 }
