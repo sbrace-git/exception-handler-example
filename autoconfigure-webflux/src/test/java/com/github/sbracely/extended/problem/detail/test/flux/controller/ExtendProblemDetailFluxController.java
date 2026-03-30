@@ -49,6 +49,10 @@ public class ExtendProblemDetailFluxController {
         log.info("unsupported media type");
     }
 
+    @GetMapping("/missing-request-value")
+    public void missingRequestValue(@RequestParam String id) {
+        log.info("missing-request-value id: {}", id);
+    }
 //    private final ProblemDetailService problemDetailService;
 //
 //    public ExtendProblemDetailFluxController(ProblemDetailService problemDetailService) {
@@ -169,21 +173,6 @@ public class ExtendProblemDetailFluxController {
         throw new ContentTooLargeException(new RuntimeException("content too large"));
     }
 
-    @GetMapping("/missing-request-value")
-    public void missingRequestValue(String id) throws Exception {
-//        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        if (null == servletRequestAttributes) {
-//            throw new MissingServletRequestParameterException("id", "String");
-//        }
-//        HttpServletRequest request = servletRequestAttributes.getRequest();
-//        HandlerExecutionChain handlerExecutionChain = requestMappingHandlerMapping.getHandler(request);
-//        if (null == handlerExecutionChain) {
-//            throw new MissingServletRequestParameterException("id", "String");
-//        }
-//        HandlerMethod handlerMethod = (HandlerMethod) handlerExecutionChain.getHandler();
-//        MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
-//        throw new MissingRequestValueException("id", String.class, "request param", methodParameters[0]);
-    }
 
     @GetMapping(path = "/api-version")
     public void apiVersion() {

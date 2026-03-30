@@ -93,6 +93,25 @@ class ExtendProblemDetailFluxTests {
     }
 
     @Test
+    void missingRequestValueException() {
+        String uri = BASE_PATH + "/missing-request-value";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri).exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Required query parameter 'id' is not present.");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
+
+    @Test
     void httpRequestMethodNotSupportedException() {
 //        String uri = BASE_PATH + "/param";
 //        MvcTestResult result = webTestClient.post().uri(uri).exchange();
@@ -245,23 +264,6 @@ class ExtendProblemDetailFluxTests {
 //        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
 //        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
 //        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-    }
-
-    @Test
-    void servletRequestBindingExceptionMissingRequestValueException() {
-//        String uri = BASE_PATH + "/missing-request-value-mvc";
-//        MvcTestResult result = webTestClient.get().uri(uri).exchange();
-//        assertThat(result)
-//                .hasStatus(BAD_REQUEST)
-//                .hasContentType(APPLICATION_PROBLEM_JSON);
-//        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
-//                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
-//        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-//        assertThat(extendedProblemDetail.getDetail()).isNull();
-//        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-//        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-//        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-//        assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
     @Test
