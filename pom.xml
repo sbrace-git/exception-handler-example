@@ -8,13 +8,13 @@
         <version>4.0.5</version>
         <relativePath/>
     </parent>
-    <groupId>com.github.sbrace-git</groupId>
+    <groupId>com.github.sbracely</groupId>
     <artifactId>nested-problem-detail</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>nested-problem-detail</name>
     <description>Spring Boot Starter for nested ProblemDetail exception handling</description>
-    <url>https://github.com/sbrace-git/nested-problem-detail</url>
+    <url>https://github.com/sbracely/nested-problem-detail</url>
     <licenses>
         <license/>
     </licenses>
@@ -41,12 +41,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.sbrace-git</groupId>
+                <groupId>com.github.sbracely</groupId>
                 <artifactId>nested-problem-detail-autoconfigure</artifactId>
                 <version>${nested-problem-detail.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.sbrace-git</groupId>
+                <groupId>com.github.sbracely</groupId>
                 <artifactId>nested-problem-detail-spring-boot-starter</artifactId>
                 <version>${nested-problem-detail.version}</version>
             </dependency>

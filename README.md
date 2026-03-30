@@ -17,7 +17,7 @@ A Spring Boot Starter for comprehensive exception handling with nested ProblemDe
 
 ```xml
 <dependency>
-    <groupId>com.github.sbrace-git</groupId>
+    <groupId>com.github.sbracely</groupId>
     <artifactId>nested-problem-detail-spring-boot-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 </dependency>
@@ -38,7 +38,7 @@ The starter auto-configures exception handling for your Spring MVC application.
 
 ## Exception Test Coverage
 
-See [MVC Exception Test Mapping](nested-problem-detail-test-mvc/src/test/resources/mvc-exception-test-mapping.md) for the complete test coverage table.
+See [MVC Exception Test Mapping](nested-problem-detail-test-mvc/mvc-exception-test-mapping.md) for the complete test coverage table.
 
 The project covers **50+ test methods** for **35+ exception classes** including:
 - 20 base Spring MVC exceptions (HttpRequestMethodNotSupportedException, HttpMediaTypeNotSupportedException, etc.)
@@ -50,13 +50,13 @@ The project covers **50+ test methods** for **35+ exception classes** including:
 ```
 .
 ├── nested-problem-detail-autoconfigure/     # Auto-configuration module
-│   └── src/main/java/com/github/sbrace/nested/problem/detail/
+│   └── src/main/java/com/github/sbracely/nested/problem/detail/
 │       ├── NestedProblemDetailAutoConfiguration.java
 │       ├── NestedProblemDetailProperties.java
 │       └── handler/RequestExceptionHandler.java
 ├── nested-problem-detail-spring-boot-starter/  # Starter module
 ├── nested-problem-detail-test-mvc/          # MVC test module
-│   └── src/test/java/com/github/sbrace/nested/problem/detail/test/mvc/
+│   └── src/test/java/com/github/sbracely/nested/problem/detail/test/mvc/
 ├── nested-problem-detail-test-flux/         # WebFlux test module (TODO)
 └── pom.xml
 ```
