@@ -1,5 +1,6 @@
 package com.github.sbracely.extended.problem.detail.test.flux.test;
 
+import com.github.sbracely.extended.problem.detail.response.ExtendedProblemDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,17 +11,40 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
+import java.net.URI;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
 
 @Slf4j
 @SpringBootTest
 @AutoConfigureWebTestClient
 class ExtendProblemDetailFluxTests {
 
-
     @Autowired
     private WebTestClient webTestClient;
 
-    private static final String BASE_PATH = "/mvc-problem-detail";
+    private static final String BASE_PATH = "/extend-problem-detail-flux";
+
+    @Test
+    void methodNotAllowedException() {
+        String uri = BASE_PATH + "/method-not-allowed";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.delete().uri(uri).exchange()
+                .expectStatus().isEqualTo(METHOD_NOT_ALLOWED)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Supported methods: [GET]");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
 
     @Test
     void httpRequestMethodNotSupportedException() {
@@ -568,24 +592,6 @@ class ExtendProblemDetailFluxTests {
 //            assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
 //            assertThat(extendedProblemDetail.getErrors()).isNull();
         }
-    }
-
-    @Test
-    void errorResponseExceptionMethodNotAllowedException() {
-//        String uri = BASE_PATH + "/method-not-allowed";
-//        MvcTestResult result = webTestClient.delete().uri(uri).exchange();
-//        assertThat(result)
-//                .hasStatus(METHOD_NOT_ALLOWED)
-//                .hasContentType(APPLICATION_PROBLEM_JSON);
-//        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
-//                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
-//        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-//        assertThat(extendedProblemDetail.getDetail()).startsWith("Supported methods: [")
-//                .contains("GET", "POST").endsWith("]");
-//        assertThat(extendedProblemDetail.getTitle()).isEqualTo("Method Not Allowed");
-//        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-//        assertThat(extendedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
-//        assertThat(extendedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
     }
 
     @Test

@@ -600,12 +600,14 @@ class ExtendProblemDetailMvcTests {
         ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
                 .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
         log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
         assertThat(extendedProblemDetail.getDetail()).startsWith("Supported methods: [")
                 .contains("GET", "POST").endsWith("]");
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo("Method Not Allowed");
         assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
     @Test

@@ -16,36 +16,35 @@ import org.assertj.core.util.Lists;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponseException;
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.server.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/mvc-problem-detail")
-public class MvcProblemDetailController {
+@RequestMapping("/extend-problem-detail-flux")
+public class ExtendProblemDetailFluxController {
 
-    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
-
-    private final ProblemDetailService problemDetailService;
-
-    public MvcProblemDetailController(RequestMappingHandlerMapping requestMappingHandlerMapping, ProblemDetailService problemDetailService) {
-        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
-        this.problemDetailService = problemDetailService;
+    @GetMapping("/method-not-allowed")
+    public void methodNotAllowed() {
+        log.info("method-not-allowed");
     }
+
+//    private final ProblemDetailService problemDetailService;
+//
+//    public ExtendProblemDetailFluxController(ProblemDetailService problemDetailService) {
+//        this.problemDetailService = problemDetailService;
+//    }
+
 
     @GetMapping("/param")
     public void get(@RequestParam Integer id) {
@@ -158,16 +157,6 @@ public class MvcProblemDetailController {
     public void contentTooLarge(@RequestPart MultipartFile file) {
         log.info("file: {}", file);
         throw new ContentTooLargeException(new RuntimeException("content too large"));
-    }
-
-    @RequestMapping("/method-not-allowed")
-    public void methodNotAllowed(HttpMethod httpMethod) {
-        List<HttpMethod> supportedMethods = Arrays.asList(HttpMethod.GET, HttpMethod.POST);
-        log.info("httpMethod: {}", httpMethod);
-        if (supportedMethods.contains(httpMethod)) {
-            return;
-        }
-        throw new MethodNotAllowedException(httpMethod, supportedMethods);
     }
 
     @GetMapping("/missing-request-value")
@@ -317,11 +306,11 @@ public class MvcProblemDetailController {
         return new ProblemDetailResponse();
     }
 
-    @GetMapping("/method-validation")
-    public void methodValidation() {
-        String problemDetail = problemDetailService.createProblemDetail("");
-        log.info("problemDetail: {}", problemDetail);
-    }
+//    @GetMapping("/method-validation")
+//    public void methodValidation() {
+//        String problemDetail = problemDetailService.createProblemDetail("");
+//        log.info("problemDetail: {}", problemDetail);
+//    }
 
 //    @GetMapping("/async-request-not-usable")
 //    public SseEmitter asyncRequestNotUsable() {
