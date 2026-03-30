@@ -7,8 +7,8 @@ A Spring Boot Starter for comprehensive exception handling with nested ProblemDe
 - **Spring Boot Starter**: Auto-configuration for easy integration
 - **Global exception handler**: Extends `ResponseEntityExceptionHandler`
 - **Standardized error responses**: Using `ProblemDetail` (RFC 9457)
-- **Nested error details**: Custom `NestedProblemDetail` with error codes
-- **Configurable**: Enable/disable and customize error code prefix
+- **Nested error details**: Custom `NestedProblemDetail` with field-level error information
+- **Configurable**: Enable/disable exception handling
 - **Full test coverage**: 50+ test methods for 35+ exception classes
 
 ## Quick Start
@@ -29,7 +29,6 @@ A Spring Boot Starter for comprehensive exception handling with nested ProblemDe
 nested:
   problem-detail:
     enabled: true              # Enable/disable exception handling
-    error-code-prefix: "ERR"   # Customize error code prefix
 ```
 
 ### 3. Done!
