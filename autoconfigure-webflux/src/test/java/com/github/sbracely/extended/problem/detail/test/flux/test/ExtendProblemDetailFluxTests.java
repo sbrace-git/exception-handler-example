@@ -10,13 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.ACCEPT;
@@ -398,6 +396,26 @@ class ExtendProblemDetailFluxTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    @Test
+    void serverErrorException() {
+        String uri = BASE_PATH + "/server-error";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus().isEqualTo(INTERNAL_SERVER_ERROR)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("server error");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
+
 
 
 
@@ -456,28 +474,6 @@ class ExtendProblemDetailFluxTests {
                 .isEqualTo(new Error(Error.Type.PARAMETER, null, "元素不能包含空"));
     }
 
-
-
-
-    @Test
-    void serverErrorException() {
-        String uri = BASE_PATH + "/server-error";
-        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
-                .exchange()
-                .expectStatus().isEqualTo(INTERNAL_SERVER_ERROR)
-                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
-                .expectBody(ExtendedProblemDetail.class)
-                .returnResult().getResponseBody();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail).isNotNull();
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("server error");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).isNull();
-    }
 
     @Test
     void responseStatusException() {

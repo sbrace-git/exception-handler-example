@@ -110,10 +110,10 @@ public class ExtendProblemDetailFluxController {
     }
 
     @GetMapping("/handler-method-validation-request-param")
-    public Mono<String> handlerMethodValidationRequestParam(@RequestParam @NotBlank(message = "参数不能为空") String param,
+    public Mono<Void> handlerMethodValidationRequestParam(@RequestParam @NotBlank(message = "参数不能为空") String param,
                                                             @RequestParam @Size(min = 5, message = "长度至少5") String value) {
         log.info("param: {}, value: {}", param, value);
-        return Mono.just(param + value);
+        return Mono.empty();
     }
 
     @PostMapping("/handler-method-validation-request-part")
@@ -135,8 +135,27 @@ public class ExtendProblemDetailFluxController {
     @GetMapping("/server-web-input")
     public Mono<Void> serverWebInput() {
         log.info("server web input");
-        return Mono.error(new ServerWebInputException("server web input error"));
+        throw new ServerWebInputException("server web input error");
     }
+
+    @GetMapping("/server-error")
+    public Mono<String> serverError() {
+        log.info("server error");
+        return Mono.error(new ServerErrorException("server error", new RuntimeException()));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -193,10 +212,4 @@ public class ExtendProblemDetailFluxController {
         throw new CustomizedException(HttpStatus.INTERNAL_SERVER_ERROR, extendedProblemDetail);
     }
 
-    // ServerErrorException - 通过内部服务调用失败触发
-    @GetMapping("/server-error")
-    public Mono<String> serverError() {
-        log.info("server error");
-        return Mono.error(new ServerErrorException("server error", new RuntimeException()));
-    }
-}
+  }
