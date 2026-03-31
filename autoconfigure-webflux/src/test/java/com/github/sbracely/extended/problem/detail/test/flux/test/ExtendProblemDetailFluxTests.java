@@ -161,8 +161,142 @@ class ExtendProblemDetailFluxTests {
     }
 
     @Test
-    void handlerMethodValidationException() {
-        String uri = BASE_PATH + "/handler-method-validation";
+    void handlerMethodValidationExceptionCookie() {
+        String uri = BASE_PATH + "/handler-method-validation-cookie";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .cookie("cookieValue", "")
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.COOKIE, "cookieValue", "cookie不能为空"));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionMatrixVariable() {
+        String uri = BASE_PATH + "/handler-method-validation-matrix/abc;list=a,b,c";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, "list", "list最大长度是2"));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionModelAttribute() {
+        String uri = BASE_PATH + "/handler-method-validation-model";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, "password", "密码不能是空"));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionPathVariable() {
+        String uri = BASE_PATH + "/handler-method-validation-path/abc";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, "id", "id长度至少5"));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionRequestBody() {
+        String uri = BASE_PATH + "/handler-method-validation-body";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
+                .contentType(APPLICATION_JSON)
+                .bodyValue("""
+                        {
+                            "name": "abc"
+                        }
+                        """)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, "password", "密码不能是空"));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionHeader() {
+        String uri = BASE_PATH + "/handler-method-validation-header";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .header("headerValue", "")
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.HEADER, "headerValue", "header不能为空"));
+    }
+
+    @Test
+    void handlerMethodValidationExceptionRequestParam() {
+        String uri = BASE_PATH + "/handler-method-validation-request-param";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(uri)
@@ -186,6 +320,66 @@ class ExtendProblemDetailFluxTests {
                 new Error(Error.Type.PARAMETER, "param", "参数不能为空"),
                 new Error(Error.Type.PARAMETER, "value", "长度至少5")
         );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Test
+    void handlerMethodValidationExceptionRequestBodyValidationResult() {
+        String uri = BASE_PATH + "/handler-method-validation-body-list";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
+                .contentType(APPLICATION_JSON)
+                .bodyValue("""
+                        ["", "a"]
+                        """)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, null, "元素不能包含空"));
     }
 
     @Test

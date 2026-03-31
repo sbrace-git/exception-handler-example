@@ -4,9 +4,14 @@ import com.github.sbracely.extended.problem.detail.response.Error;
 import com.github.sbracely.extended.problem.detail.response.ExtendedProblemDetail;
 import com.github.sbracely.extended.problem.detail.test.flux.exception.CustomizedException;
 import com.github.sbracely.extended.problem.detail.test.flux.reuqest.ProblemDetailRequest;
+import com.github.sbracely.extended.problem.detail.test.flux.reuqest.valid.annocation.CheckPassword;
 import com.github.sbracely.extended.problem.detail.test.flux.service.ProblemDetailService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.springframework.http.HttpStatus;
@@ -58,12 +63,74 @@ public class ExtendProblemDetailFluxController {
         log.info("web exchange bind: {}", problemDetailRequest);
     }
 
-    // HandlerMethodValidationException - 通过方法参数校验触发
-    @GetMapping("/handler-method-validation")
-    public Mono<String> handlerMethodValidation(@RequestParam @NotBlank(message = "参数不能为空") String param,
+    @GetMapping("/handler-method-validation-cookie")
+    public Mono<String> handlerMethodValidationCookie(@CookieValue @NotBlank(message = "cookie不能为空") String cookieValue) {
+        log.info("cookieValue: {}", cookieValue);
+        return Mono.just(cookieValue);
+    }
+
+    @GetMapping("/handler-method-validation-matrix/{id}")
+    public Mono<String> handlerMethodValidationMatrix(@PathVariable String id,
+                                                      @MatrixVariable @Size(max = 2, message = "list最大长度是2") List<String> list) {
+        log.info("id: {}, list: {}", id, list);
+        return Mono.just(id + list);
+    }
+
+    @GetMapping("/handler-method-validation-model")
+    public Mono<ProblemDetailRequest> handlerMethodValidationModel(@CheckPassword(message = "密码不能是空") ProblemDetailRequest problemDetailRequest) {
+        log.info("problemDetailRequest: {}", problemDetailRequest);
+        return Mono.just(problemDetailRequest);
+    }
+
+    @GetMapping("/handler-method-validation-path/{id}")
+    public Mono<String> handlerMethodValidationPath(@PathVariable @Size(min = 5, message = "id长度至少5") String id) {
+        log.info("id: {}", id);
+        return Mono.just(id);
+    }
+
+    @PostMapping("/handler-method-validation-body")
+    public Mono<ProblemDetailRequest> handlerMethodValidationBody(@RequestBody @CheckPassword(message = "密码不能是空") ProblemDetailRequest problemDetailRequest) {
+        log.info("problemDetailRequest: {}", problemDetailRequest);
+        return Mono.just(problemDetailRequest);
+    }
+
+    @GetMapping("/handler-method-validation-request-param")
+    public Mono<String> handlerMethodValidationRequestParam(@RequestParam @NotBlank(message = "参数不能为空") String param,
                                                 @RequestParam @Size(min = 5, message = "长度至少5") String value) {
         log.info("param: {}, value: {}", param, value);
         return Mono.just(param + value);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // HandlerMethodValidationException - RequestHeader校验
+    @GetMapping("/handler-method-validation-header")
+    public Mono<String> handlerMethodValidationHeader(@RequestHeader @NotBlank(message = "header不能为空") String headerValue) {
+        log.info("headerValue: {}", headerValue);
+        return Mono.just(headerValue);
+    }
+
+
+
+    // HandlerMethodValidationException - RequestBodyValidationResult校验
+    @PostMapping("/handler-method-validation-body-list")
+    public Mono<List<String>> handlerMethodValidationBodyList(@RequestBody List<@NotBlank(message = "元素不能包含空") String> list) {
+        log.info("list: {}", list);
+        return Mono.just(list);
     }
 
     @GetMapping("/response-status-exception")
