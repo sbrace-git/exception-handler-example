@@ -9,6 +9,7 @@ import com.github.sbracely.extended.problem.detail.test.flux.reuqest.valid.annoc
 import com.github.sbracely.extended.problem.detail.test.flux.service.ProblemDetailService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -95,6 +96,12 @@ public class ExtendProblemDetailFluxController {
         return Mono.just(problemDetailRequest);
     }
 
+    @GetMapping("/handler-method-validation-header")
+    public Mono<String> handlerMethodValidationHeader(@RequestHeader @NotBlank(message = "header不能为空") String headerValue) {
+        log.info("headerValue: {}", headerValue);
+        return Mono.just(headerValue);
+    }
+
     @GetMapping("/handler-method-validation-request-param")
     public Mono<String> handlerMethodValidationRequestParam(@RequestParam @NotBlank(message = "参数不能为空") String param,
                                                             @RequestParam @Size(min = 5, message = "长度至少5") String value) {
@@ -106,6 +113,15 @@ public class ExtendProblemDetailFluxController {
     public Mono<Void> handlerMethodValidationRequestPart(@RequestPart(required = false)
                                                          @CheckFilePart(requiredMessage = "文件不能为空") FilePart filePart) {
         log.info("part: {}", filePart);
+        return Mono.empty();
+    }
+
+    @GetMapping("/handler-method-validation-other")
+    public Mono<Void> handlerMethodValidationOther(
+            @SessionAttribute(required = false) @NotBlank(message = "sessionAttribute 不能为空") String sessionAttribute,
+            @RequestAttribute(required = false) @NotBlank(message = "requestAttribute 不能为空") String requestAttribute,
+            @Value("") @NotBlank(message = "value 不能为空") String value) {
+        log.info("sessionAttribute: {}, requestAttribute: {}, value: {}", sessionAttribute, requestAttribute, value);
         return Mono.empty();
     }
 
@@ -125,12 +141,7 @@ public class ExtendProblemDetailFluxController {
 
 
 
-    // HandlerMethodValidationException - RequestHeader校验
-    @GetMapping("/handler-method-validation-header")
-    public Mono<String> handlerMethodValidationHeader(@RequestHeader @NotBlank(message = "header不能为空") String headerValue) {
-        log.info("headerValue: {}", headerValue);
-        return Mono.just(headerValue);
-    }
+
 
 
     // HandlerMethodValidationException - RequestBodyValidationResult校验
