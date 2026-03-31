@@ -462,6 +462,26 @@ class ExtendProblemDetailFluxTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    @Test
+    void contentTooLargeException() {
+        String uri = BASE_PATH + "/content-too-large";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
+                .bodyValue("x".repeat(1024 * 1024)) // 1MB
+                .exchange()
+                .expectStatus().isEqualTo(CONTENT_TOO_LARGE)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(CONTENT_TOO_LARGE.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(CONTENT_TOO_LARGE.value());
+        assertThat(extendedProblemDetail.getDetail()).isNull();
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
 
 
 
@@ -572,5 +592,69 @@ class ExtendProblemDetailFluxTests {
                 new Error("余额不足"),
                 new Error("支付频繁")
         );
+    }
+
+
+
+    @Test
+    void missingApiVersionException() {
+        String uri = BASE_PATH + "/missing-api-version";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isNotEmpty();
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
+
+    @Test
+    void noResourceFoundException() {
+        String uri = BASE_PATH + "/no-resource-found/nonexistent.js";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
+                .exchange()
+                .expectStatus().isEqualTo(NOT_FOUND)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(NOT_FOUND.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(NOT_FOUND.value());
+        assertThat(extendedProblemDetail.getDetail()).contains("No static resource");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
+
+    @Test
+    void payloadTooLargeException() {
+        String uri = BASE_PATH + "/payload-too-large";
+        // 通过发送过大的请求体触发 PayloadTooLargeException
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
+                .bodyValue("x".repeat(1024 * 1024)) // 1MB 数据
+                .exchange()
+                .expectStatus().isEqualTo(PAYLOAD_TOO_LARGE)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(PAYLOAD_TOO_LARGE.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(PAYLOAD_TOO_LARGE.value());
+        assertThat(extendedProblemDetail.getDetail()).isNotEmpty();
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 }

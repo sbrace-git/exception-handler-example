@@ -17,9 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.server.ServerErrorException;
-import org.springframework.web.server.ServerWebInputException;
+import org.springframework.web.reactive.resource.NoResourceFoundException;
+import org.springframework.web.server.*;
+import org.springframework.web.accept.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -155,6 +155,11 @@ public class ExtendProblemDetailFluxController {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "exception");
     }
 
+    @PostMapping("/content-too-large")
+    public Mono<Void> contentTooLarge(@RequestBody byte[] body) {
+        log.info("body.length: {}", body.length);
+        return Mono.empty();
+    }
 
 
 
@@ -228,5 +233,29 @@ public class ExtendProblemDetailFluxController {
         extendedProblemDetail.setDetail("支付失败");
         extendedProblemDetail.setErrors(Lists.newArrayList(new Error("余额不足"), new Error("支付频繁")));
         throw new CustomizedException(HttpStatus.INTERNAL_SERVER_ERROR, extendedProblemDetail);
+    }
+
+    // InvalidApiVersionException - 通过无效的 API 版本触发
+    @GetMapping("/invalid-api-version")
+    public Mono<Void> invalidApiVersion() {
+        return Mono.error(new InvalidApiVersionException("invalid version"));
+    }
+
+    // MissingApiVersionException - 通过缺少 API 版本触发
+    @GetMapping("/missing-api-version")
+    public Mono<Void> missingApiVersion() {
+        return Mono.error(new MissingApiVersionException());
+    }
+
+    // NoResourceFoundException - 通过访问不存在的静态资源触发
+    @GetMapping("/no-resource-found/**")
+    public Mono<Void> noResourceFound() {
+        return Mono.empty();
+    }
+
+    // PayloadTooLargeException - 通过请求实体过大触发
+    @PostMapping("/payload-too-large")
+    public Mono<Void> payloadTooLarge(@RequestBody byte[] body) {
+        return Mono.empty();
     }
 }
