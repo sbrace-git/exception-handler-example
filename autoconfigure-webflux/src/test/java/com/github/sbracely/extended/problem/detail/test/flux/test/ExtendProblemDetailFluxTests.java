@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.ACCEPT;
@@ -326,8 +328,9 @@ class ExtendProblemDetailFluxTests {
     @Test
     void handlerMethodValidationExceptionRequestPart() {
         String uri = BASE_PATH + "/handler-method-validation-request-part";
+        // 测试文件为空的情况 - 使用 body() 方法让 WebTestClient 自动添加 boundary
         ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .bodyValue(Collections.emptyMap())
                 .exchange()
                 .expectStatus().isEqualTo(BAD_REQUEST)
                 .expectHeader().contentType(APPLICATION_PROBLEM_JSON)

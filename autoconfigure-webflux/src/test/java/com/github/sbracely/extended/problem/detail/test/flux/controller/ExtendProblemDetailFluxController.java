@@ -4,6 +4,7 @@ import com.github.sbracely.extended.problem.detail.response.Error;
 import com.github.sbracely.extended.problem.detail.response.ExtendedProblemDetail;
 import com.github.sbracely.extended.problem.detail.test.flux.exception.CustomizedException;
 import com.github.sbracely.extended.problem.detail.test.flux.reuqest.ProblemDetailRequest;
+import com.github.sbracely.extended.problem.detail.test.flux.reuqest.valid.annocation.CheckFilePart;
 import com.github.sbracely.extended.problem.detail.test.flux.reuqest.valid.annocation.CheckPassword;
 import com.github.sbracely.extended.problem.detail.test.flux.service.ProblemDetailService;
 import jakarta.validation.constraints.NotBlank;
@@ -96,16 +97,18 @@ public class ExtendProblemDetailFluxController {
 
     @GetMapping("/handler-method-validation-request-param")
     public Mono<String> handlerMethodValidationRequestParam(@RequestParam @NotBlank(message = "参数不能为空") String param,
-                                                @RequestParam @Size(min = 5, message = "长度至少5") String value) {
+                                                            @RequestParam @Size(min = 5, message = "长度至少5") String value) {
         log.info("param: {}, value: {}", param, value);
         return Mono.just(param + value);
     }
 
     @PostMapping("/handler-method-validation-request-part")
-    public Mono<Void> handlerMethodValidationRequestPart(@RequestPart Mono<FilePart> filePartMono) {
-        log.info("part: {}", filePartMono);
+    public Mono<Void> handlerMethodValidationRequestPart(@RequestPart(required = false)
+                                                         @CheckFilePart(requiredMessage = "文件不能为空") FilePart filePart) {
+        log.info("part: {}", filePart);
         return Mono.empty();
     }
+
 
 
 
@@ -128,7 +131,6 @@ public class ExtendProblemDetailFluxController {
         log.info("headerValue: {}", headerValue);
         return Mono.just(headerValue);
     }
-
 
 
     // HandlerMethodValidationException - RequestBodyValidationResult校验
