@@ -351,6 +351,31 @@ class ExtendProblemDetailFluxTests {
     }
 
     @Test
+    void handlerMethodValidationExceptionRequestBodyValidationResult() {
+        String uri = BASE_PATH + "/handler-method-validation-request-body-validation-result";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
+                .contentType(APPLICATION_JSON)
+                .bodyValue("""
+                        ["", "a"]
+                        """)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, null, "元素不能包含空"));
+    }
+
+    @Test
     @ExtendWith(OutputCaptureExtension.class)
     void handlerMethodValidationExceptionOther(CapturedOutput output) {
         String uri = BASE_PATH + "/handler-method-validation-other";
@@ -375,6 +400,7 @@ class ExtendProblemDetailFluxTests {
                 "codes: [NotBlank.extendProblemDetailFluxController#handlerMethodValidationOther.value, NotBlank.value, NotBlank.java.lang.String, NotBlank], defaultMessage: value 不能为空"
         ));
     }
+
 
     @Test
     void serverWebInputException() {
@@ -416,65 +442,6 @@ class ExtendProblemDetailFluxTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Test
-    void handlerMethodValidationExceptionRequestBodyValidationResult() {
-        String uri = BASE_PATH + "/handler-method-validation-body-list";
-        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
-                .contentType(APPLICATION_JSON)
-                .bodyValue("""
-                        ["", "a"]
-                        """)
-                .exchange()
-                .expectStatus().isEqualTo(BAD_REQUEST)
-                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
-                .expectBody(ExtendedProblemDetail.class)
-                .returnResult().getResponseBody();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail).isNotNull();
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error(Error.Type.PARAMETER, null, "元素不能包含空"));
-    }
-
-
     @Test
     void responseStatusException() {
         String uri = BASE_PATH + "/response-status-exception";
@@ -494,6 +461,55 @@ class ExtendProblemDetailFluxTests {
         assertThat(extendedProblemDetail.getProperties()).isNull();
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Test
     void errorResponseException() {

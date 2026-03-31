@@ -9,12 +9,9 @@ import com.github.sbracely.extended.problem.detail.test.flux.reuqest.valid.annoc
 import com.github.sbracely.extended.problem.detail.test.flux.service.ProblemDetailService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
@@ -24,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -132,6 +131,12 @@ public class ExtendProblemDetailFluxController {
         return Mono.empty();
     }
 
+    @PostMapping("/handler-method-validation-request-body-validation-result")
+    public Mono<Void> handlerMethodValidationRequestBodyValidationResult(@RequestBody List<@NotBlank(message = "元素不能包含空") String> list) {
+        log.info("list: {}", list);
+        return Mono.empty();
+    }
+
     @GetMapping("/server-web-input")
     public Mono<Void> serverWebInput() {
         log.info("server web input");
@@ -144,49 +149,62 @@ public class ExtendProblemDetailFluxController {
         return Mono.error(new ServerErrorException("server error", new RuntimeException()));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // HandlerMethodValidationException - RequestBodyValidationResult校验
-    @PostMapping("/handler-method-validation-body-list")
-    public Mono<List<String>> handlerMethodValidationBodyList(@RequestBody List<@NotBlank(message = "元素不能包含空") String> list) {
-        log.info("list: {}", list);
-        return Mono.just(list);
-    }
-
     @GetMapping("/response-status-exception")
     public Mono<Void> responseStatusException() {
         log.info("response status exception");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "exception");
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @GetMapping("/error-response-exception")
     public Mono<Void> errorResponseException() {
@@ -211,5 +229,4 @@ public class ExtendProblemDetailFluxController {
         extendedProblemDetail.setErrors(Lists.newArrayList(new Error("余额不足"), new Error("支付频繁")));
         throw new CustomizedException(HttpStatus.INTERNAL_SERVER_ERROR, extendedProblemDetail);
     }
-
-  }
+}
