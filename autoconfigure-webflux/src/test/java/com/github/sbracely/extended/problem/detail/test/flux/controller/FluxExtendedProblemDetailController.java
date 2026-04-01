@@ -2,7 +2,7 @@ package com.github.sbracely.extended.problem.detail.test.flux.controller;
 
 import com.github.sbracely.extended.problem.detail.response.Error;
 import com.github.sbracely.extended.problem.detail.response.ExtendedProblemDetail;
-import com.github.sbracely.extended.problem.detail.test.flux.exception.BusinessException;
+import com.github.sbracely.extended.problem.detail.test.flux.exception.ExtendedErrorResponseException;
 import com.github.sbracely.extended.problem.detail.test.flux.reuqest.ProblemDetailRequest;
 import com.github.sbracely.extended.problem.detail.test.flux.reuqest.valid.annocation.CheckFilePart;
 import com.github.sbracely.extended.problem.detail.test.flux.reuqest.valid.annocation.CheckPassword;
@@ -18,7 +18,10 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.*;
+import org.springframework.web.server.PayloadTooLargeException;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerErrorException;
+import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -91,8 +94,8 @@ public class FluxExtendedProblemDetailController {
     /**
      * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
      */
-    @GetMapping("/handler-method-validation-exception-cookie")
-    public Mono<Void> handlerMethodValidationExceptionCookie(@CookieValue @NotBlank(message = "cookie 不能为空") String cookieValue) {
+    @GetMapping("/handler-method-validation-exception-cookie-value")
+    public Mono<Void> handlerMethodValidationExceptionCookieValue(@CookieValue @NotBlank(message = "cookie 不能为空") String cookieValue) {
         log.info("cookieValue: {}", cookieValue);
         return Mono.empty();
     }
@@ -119,8 +122,8 @@ public class FluxExtendedProblemDetailController {
     /**
      * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
      */
-    @GetMapping("/handler-method-validation-exception-path/{id}")
-    public Mono<Void> handlerMethodValidationExceptionPath(@PathVariable @Size(min = 5, message = "id 长度至少 5") String id) {
+    @GetMapping("/handler-method-validation-exception-path-variable/{id}")
+    public Mono<Void> handlerMethodValidationExceptionPathVariable(@PathVariable @Size(min = 5, message = "id 长度至少 5") String id) {
         log.info("id: {}", id);
         return Mono.empty();
     }
@@ -128,8 +131,8 @@ public class FluxExtendedProblemDetailController {
     /**
      * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
      */
-    @PostMapping("/handler-method-validation-exception-body")
-    public Mono<Void> handlerMethodValidationExceptionBody(@RequestBody @CheckPassword(message = "密码不能是空") ProblemDetailRequest problemDetailRequest) {
+    @PostMapping("/handler-method-validation-exception-request-body")
+    public Mono<Void> handlerMethodValidationExceptionRequestBody(@RequestBody @CheckPassword(message = "密码不能是空") ProblemDetailRequest problemDetailRequest) {
         log.info("problemDetailRequest: {}", problemDetailRequest);
         return Mono.empty();
     }
@@ -137,8 +140,17 @@ public class FluxExtendedProblemDetailController {
     /**
      * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
      */
-    @GetMapping("/handler-method-validation-exception-header")
-    public Mono<Void> handlerMethodValidationExceptionHeader(@RequestHeader @NotBlank(message = "header 不能为空") String headerValue) {
+    @PostMapping("/handler-method-validation-exception-request-body-validation-result")
+    public Mono<Void> handlerMethodValidationExceptionRequestBodyValidationResult(@RequestBody List<@NotBlank(message = "元素不能包含空") String> list) {
+        log.info("list: {}", list);
+        return Mono.empty();
+    }
+
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     */
+    @GetMapping(path = "/handler-method-validation-exception-request-header")
+    public Mono<Void> handlerMethodValidationExceptionRequestHeader(@RequestHeader @NotBlank(message = "header 不能为空") String headerValue) {
         log.info("headerValue: {}", headerValue);
         return Mono.empty();
     }
@@ -172,15 +184,6 @@ public class FluxExtendedProblemDetailController {
             @RequestAttribute(required = false) @NotBlank(message = "requestAttribute 不能为空") String requestAttribute,
             @Value("") @NotBlank(message = "value 不能为空") String value) {
         log.info("sessionAttribute: {}, requestAttribute: {}, value: {}", sessionAttribute, requestAttribute, value);
-        return Mono.empty();
-    }
-
-    /**
-     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
-     */
-    @PostMapping("/handler-method-validation-exception-request-body-validation-result")
-    public Mono<Void> handlerMethodValidationExceptionRequestBodyValidationResult(@RequestBody List<@NotBlank(message = "元素不能包含空") String> list) {
-        log.info("list: {}", list);
         return Mono.empty();
     }
 
@@ -262,17 +265,17 @@ public class FluxExtendedProblemDetailController {
     }
 
     /**
-     * {@link com.github.sbracely.extended.problem.detail.test.flux.exception.BusinessException}
+     * {@link ExtendedErrorResponseException}
      */
-    @GetMapping("/business-exception")
-    public Mono<Void> businessException() {
+    @GetMapping("/extended-error-response-exception")
+    public Mono<Void> extendedErrorResponseException() {
         log.info("business");
         ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail();
         extendedProblemDetail.setTitle("支付失败标题");
         extendedProblemDetail.setDetail("支付失败详情");
         extendedProblemDetail.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         extendedProblemDetail.setErrors(Lists.newArrayList(new Error("余额不足"), new Error("支付频繁")));
-        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, extendedProblemDetail);
+        throw new ExtendedErrorResponseException(HttpStatus.INTERNAL_SERVER_ERROR, extendedProblemDetail);
     }
 
     /**

@@ -2,6 +2,8 @@ package com.github.sbracely.extended.problem.detail.test.flux.test;
 
 import com.github.sbracely.extended.problem.detail.response.Error;
 import com.github.sbracely.extended.problem.detail.response.ExtendedProblemDetail;
+import com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController;
+import com.github.sbracely.extended.problem.detail.test.flux.reuqest.ProblemDetailRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,16 +15,21 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.method.ParameterErrors;
+import org.springframework.validation.method.ParameterValidationResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.MethodNotAllowedException;
+import org.springframework.web.server.NotAcceptableStatusException;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.ACCEPT;
@@ -41,6 +48,10 @@ class FluxExtendedProblemDetailTests {
 
     private static final String BASE_PATH = "/flux-extended-problem-detail";
 
+    /**
+     * {@link MethodNotAllowedException}
+     * {@link FluxExtendedProblemDetailController#methodNotAllowedException()}.
+     */
     @Test
     void methodNotAllowedException() {
         String uri = BASE_PATH + "/method-not-allowed-exception";
@@ -61,6 +72,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link NotAcceptableStatusException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#notAcceptableStatusException()}.
+     */
     @Test
     void notAcceptableStatusException() {
         String uri = BASE_PATH + "/not-acceptable-status-exception";
@@ -83,6 +98,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.server.UnsupportedMediaTypeStatusException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#unsupportedMediaTypeStatusException()}.
+     */
     @Test
     void unsupportedMediaTypeStatusException() {
         String uri = BASE_PATH + "/unsupported-media-type-status-exception";
@@ -103,6 +122,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.server.MissingRequestValueException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#missingRequestValueException(String)} ()}.
+     */
     @Test
     void missingRequestValueException() {
         String uri = BASE_PATH + "/missing-request-value-exception";
@@ -122,6 +145,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.server.UnsatisfiedRequestParameterException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#unsatisfiedRequestParameterException()}.
+     */
     @Test
     void unsatisfiedRequestParameterException() {
         String uri = BASE_PATH + "/unsatisfied-request-parameter-exception";
@@ -142,6 +169,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.bind.support.WebExchangeBindException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#webExchangeBindException(ProblemDetailRequest)} ()}.
+     */
     @Test
     void webExchangeBindException() {
         String uri = BASE_PATH + "/web-exchange-bind-exception";
@@ -173,9 +204,14 @@ class FluxExtendedProblemDetailTests {
         );
     }
 
+    /**
+     * {@link  org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionCookieValue(String)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#cookieValue(CookieValue, ParameterValidationResult)}
+     */
     @Test
-    void handlerMethodValidationExceptionCookie() {
-        String uri = BASE_PATH + "/handler-method-validation-exception-cookie";
+    void handlerMethodValidationExceptionCookieValue() {
+        String uri = BASE_PATH + "/handler-method-validation-exception-cookie-value";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
                 .cookie("cookieValue", "")
                 .exchange()
@@ -195,6 +231,11 @@ class FluxExtendedProblemDetailTests {
                 .isEqualTo(new Error(Error.Type.COOKIE, "cookieValue", "cookie 不能为空"));
     }
 
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionMatrix(String, List)} )}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#matrixVariable(MatrixVariable, ParameterValidationResult)}
+     */
     @Test
     void handlerMethodValidationExceptionMatrixVariable() {
         String uri = BASE_PATH + "/handler-method-validation-exception-matrix/abc;list=a,b,c";
@@ -216,6 +257,11 @@ class FluxExtendedProblemDetailTests {
                 .isEqualTo(new Error(Error.Type.PARAMETER, "list", "list 最大长度是 2"));
     }
 
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionModelAttribute(ProblemDetailRequest)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#modelAttribute(ModelAttribute, ParameterErrors)}
+     */
     @Test
     void handlerMethodValidationExceptionModelAttribute() {
         String uri = BASE_PATH + "/handler-method-validation-exception-model-attribute";
@@ -237,9 +283,14 @@ class FluxExtendedProblemDetailTests {
                 .isEqualTo(new Error(Error.Type.PARAMETER, "password", "密码不能是空"));
     }
 
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionPathVariable(String)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#pathVariable(PathVariable, ParameterValidationResult)}
+     */
     @Test
     void handlerMethodValidationExceptionPathVariable() {
-        String uri = BASE_PATH + "/handler-method-validation-exception-path/abc";
+        String uri = BASE_PATH + "/handler-method-validation-exception-path-variable/abc";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
                 .exchange()
                 .expectStatus().isEqualTo(BAD_REQUEST)
@@ -258,9 +309,14 @@ class FluxExtendedProblemDetailTests {
                 .isEqualTo(new Error(Error.Type.PARAMETER, "id", "id 长度至少 5"));
     }
 
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestBody(ProblemDetailRequest)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#requestBody(RequestBody, ParameterErrors)}
+     */
     @Test
     void handlerMethodValidationExceptionRequestBody() {
-        String uri = BASE_PATH + "/handler-method-validation-exception-body";
+        String uri = BASE_PATH + "/handler-method-validation-exception-request-body";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
                 .contentType(APPLICATION_JSON)
                 .bodyValue("""
@@ -285,9 +341,44 @@ class FluxExtendedProblemDetailTests {
                 .isEqualTo(new Error(Error.Type.PARAMETER, "password", "密码不能是空"));
     }
 
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestBodyValidationResult(List)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#requestBodyValidationResult(RequestBody, ParameterValidationResult)}
+     */
     @Test
-    void handlerMethodValidationExceptionHeader() {
-        String uri = BASE_PATH + "/handler-method-validation-exception-header";
+    void handlerMethodValidationExceptionRequestBodyValidationResult() {
+        String uri = BASE_PATH + "/handler-method-validation-exception-request-body-validation-result";
+        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
+                .contentType(APPLICATION_JSON)
+                .bodyValue("""
+                        ["", "a"]
+                        """)
+                .exchange()
+                .expectStatus().isEqualTo(BAD_REQUEST)
+                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+                .expectBody(ExtendedProblemDetail.class)
+                .returnResult().getResponseBody();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail).isNotNull();
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, null, "元素不能包含空"));
+    }
+
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestHeader(String)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#requestHeader(RequestHeader, ParameterValidationResult)}
+     */
+    @Test
+    void handlerMethodValidationExceptionRequestHeader() {
+        String uri = BASE_PATH + "/handler-method-validation-exception-request-header";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
                 .header("headerValue", "")
                 .exchange()
@@ -307,6 +398,11 @@ class FluxExtendedProblemDetailTests {
                 .isEqualTo(new Error(Error.Type.HEADER, "headerValue", "header 不能为空"));
     }
 
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestParam(String, String)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#requestParam(RequestParam, ParameterValidationResult)}
+     */
     @Test
     void handlerMethodValidationExceptionRequestParam() {
         String uri = BASE_PATH + "/handler-method-validation-exception-request-param";
@@ -335,10 +431,14 @@ class FluxExtendedProblemDetailTests {
         );
     }
 
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestPart(FilePart)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#requestPart(RequestPart, ParameterErrors)}
+     */
     @Test
     void handlerMethodValidationExceptionRequestPart() {
         String uri = BASE_PATH + "/handler-method-validation-exception-request-part";
-        // 测试文件为空的情况 - 使用 body() 方法让 WebTestClient 自动添加 boundary
         ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
                 .bodyValue(Collections.emptyMap())
                 .exchange()
@@ -358,31 +458,11 @@ class FluxExtendedProblemDetailTests {
                 .isEqualTo(new Error(Error.Type.PARAMETER, "file", "文件不能为空"));
     }
 
-    @Test
-    void handlerMethodValidationExceptionRequestBodyValidationResult() {
-        String uri = BASE_PATH + "/handler-method-validation-exception-request-body-validation-result";
-        ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
-                .contentType(APPLICATION_JSON)
-                .bodyValue("""
-                        ["", "a"]
-                        """)
-                .exchange()
-                .expectStatus().isEqualTo(BAD_REQUEST)
-                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
-                .expectBody(ExtendedProblemDetail.class)
-                .returnResult().getResponseBody();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail).isNotNull();
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error(Error.Type.PARAMETER, null, "元素不能包含空"));
-    }
-
+    /**
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#handlerMethodValidationExceptionOther(String, String, String)} ()}.
+     * {@link org.springframework.web.method.annotation.HandlerMethodValidationException.Visitor#other(ParameterValidationResult)}
+     */
     @Test
     @ExtendWith(OutputCaptureExtension.class)
     void handlerMethodValidationExceptionOther(CapturedOutput output) {
@@ -409,7 +489,10 @@ class FluxExtendedProblemDetailTests {
         ));
     }
 
-
+    /**
+     * {@link org.springframework.web.server.ServerWebInputException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#serverWebInputException()}.
+     */
     @Test
     void serverWebInputException() {
         String uri = BASE_PATH + "/server-web-input-exception";
@@ -430,6 +513,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.server.ServerErrorException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#serverErrorException()}.
+     */
     @Test
     void serverErrorException() {
         String uri = BASE_PATH + "/server-error-exception";
@@ -450,6 +537,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.server.ResponseStatusException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#responseStatusException()}.
+     */
     @Test
     void responseStatusException() {
         String uri = BASE_PATH + "/response-status-exception";
@@ -470,8 +561,12 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.server.ContentTooLargeException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#contentTooLargeException(byte[])} ()}.
+     */
     @Test
-    void responseStatusExceptionContentTooLargeException() {
+    void contentTooLargeException() {
         String uri = BASE_PATH + "/content-too-large-exception";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.post().uri(uri)
                 .bodyValue("x".repeat(1024 * 1024)) // 1MB
@@ -491,6 +586,11 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.accept.InvalidApiVersionException}
+     * {@link org.springframework.web.accept.MissingApiVersionException}
+     * {@link org.springframework.web.accept.NotAcceptableApiVersionException}
+     */
     @Nested
     @TestPropertySource(properties = {
             "spring.webflux.apiversion.use.header=API-Version",
@@ -500,6 +600,10 @@ class FluxExtendedProblemDetailTests {
     @Import(ApiVersionTests.NotAcceptableApiVersionController.class)
     class ApiVersionTests {
 
+        /**
+         * {@link org.springframework.web.accept.InvalidApiVersionException}
+         * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#invalidApiVersionException()}
+         */
         @Test
         void invalidApiVersionException() {
             String uri = BASE_PATH + "/invalid-api-version-exception";
@@ -521,6 +625,10 @@ class FluxExtendedProblemDetailTests {
             assertThat(extendedProblemDetail.getErrors()).isNull();
         }
 
+        /**
+         * {@link org.springframework.web.accept.MissingApiVersionException}
+         * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#missingApiVersionException()}
+         */
         @Test
         void missingApiVersionException() {
             String uri = BASE_PATH + "/missing-api-version-exception";
@@ -542,6 +650,9 @@ class FluxExtendedProblemDetailTests {
             assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         }
 
+        /**
+         * {@link org.springframework.web.accept.NotAcceptableApiVersionException}
+         */
         @RestController
         static class NotAcceptableApiVersionController {
             @GetMapping(value = "/not-acceptable-api-version", version = "1")
@@ -551,6 +662,10 @@ class FluxExtendedProblemDetailTests {
             }
         }
 
+        /**
+         * {@link org.springframework.web.accept.NotAcceptableApiVersionException}
+         * {@link NotAcceptableApiVersionController#notAcceptableApiVersion()}
+         */
         @Test
         void notAcceptableApiVersionException() {
             String uri = "/not-acceptable-api-version";
@@ -573,33 +688,9 @@ class FluxExtendedProblemDetailTests {
         }
     }
 
-    @Nested
-    @TestPropertySource(properties = "management.endpoints.web.exposure.include=demo")
-    class EndPointTests {
-
-        private static final String BASE_PATH = "/actuator";
-
-        @Test
-        void responseStatusExceptionInvalidEndpointBadRequestException() {
-            String uri = BASE_PATH + "/demo/name";
-            ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri).exchange()
-                    .expectStatus().isEqualTo(BAD_REQUEST)
-                    .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
-                    .expectBody(ExtendedProblemDetail.class)
-                    .returnResult().getResponseBody();
-            log.info("extendedProblemDetail: {}", extendedProblemDetail);
-            assertThat(extendedProblemDetail).isNotNull();
-            assertThat(extendedProblemDetail.getType()).isNull();
-            assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-            assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-            assertThat(extendedProblemDetail.getDetail()).containsOnlyOnce("Missing parameters: ")
-                    .contains("param1", "param2");
-            assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-            assertThat(extendedProblemDetail.getProperties()).isNull();
-            assertThat(extendedProblemDetail.getErrors()).isNull();
-        }
-    }
-
+    /**
+     * {@link org.springframework.web.reactive.resource.NoResourceFoundException}
+     */
     @Test
     void noResourceFoundException() {
         String uri = BASE_PATH + "/no-resource-found";
@@ -620,6 +711,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.server.PayloadTooLargeException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#payloadTooLargeException(byte[])} ()}.
+     */
     @Test
     void payloadTooLargeException() {
         String uri = BASE_PATH + "/payload-too-large-exception";
@@ -641,6 +736,10 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
+    /**
+     * {@link org.springframework.web.ErrorResponseException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#errorResponseException()}.
+     */
     @Test
     void errorResponseException() {
         String uri = BASE_PATH + "/error-response-exception";
@@ -663,9 +762,13 @@ class FluxExtendedProblemDetailTests {
         );
     }
 
+    /**
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.exception.ExtendedErrorResponseException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#extendedErrorResponseException()}.
+     */
     @Test
-    void businessException() {
-        String uri = BASE_PATH + "/business-exception";
+    void extendedErrorResponseException() {
+        String uri = BASE_PATH + "/extended-error-response-exception";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
                 .exchange()
                 .expectStatus().isEqualTo(INTERNAL_SERVER_ERROR)
@@ -686,6 +789,10 @@ class FluxExtendedProblemDetailTests {
         );
     }
 
+    /**
+     * {@link org.springframework.validation.method.MethodValidationException}
+     * {@link com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExtendedProblemDetailController#methodValidationException()}.
+     */
     @Test
     void methodValidationException() {
         String uri = BASE_PATH + "/method-validation-exception";

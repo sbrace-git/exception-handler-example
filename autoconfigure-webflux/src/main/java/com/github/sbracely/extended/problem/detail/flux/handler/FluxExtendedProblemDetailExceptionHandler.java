@@ -71,6 +71,11 @@ public class FluxExtendedProblemDetailExceptionHandler extends ResponseEntityExc
             }
 
             @Override
+            public void requestBodyValidationResult(RequestBody requestBody, ParameterValidationResult result) {
+                processParameterValidationResult(result, Error.Type.PARAMETER, null);
+            }
+
+            @Override
             public void requestHeader(RequestHeader requestHeader, ParameterValidationResult result) {
                 processParameterValidationResult(result, Error.Type.HEADER, getParameterName(result));
             }
@@ -89,11 +94,6 @@ public class FluxExtendedProblemDetailExceptionHandler extends ResponseEntityExc
             public void other(ParameterValidationResult result) {
                 result.getResolvableErrors().forEach(error ->
                         log.error("codes: {}, defaultMessage: {}", error.getCodes(), error.getDefaultMessage()));
-            }
-
-            @Override
-            public void requestBodyValidationResult(RequestBody requestBody, ParameterValidationResult result) {
-                processParameterValidationResult(result, Error.Type.PARAMETER, null);
             }
 
             private @Nullable String getParameterName(ParameterValidationResult result) {

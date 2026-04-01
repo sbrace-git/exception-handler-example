@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponseException;
 
-public class BusinessException extends ErrorResponseException {
+public class ExtendedErrorResponseException extends ErrorResponseException {
 
-    public BusinessException(HttpStatusCode status, ProblemDetail body) {
+    public ExtendedErrorResponseException(HttpStatusCode status, ProblemDetail body) {
         super(status, body, null);
     }
 
-    public BusinessException(HttpStatusCode status, ProblemDetail body, Throwable cause) {
+    public ExtendedErrorResponseException(HttpStatusCode status, ProblemDetail body, Throwable cause) {
         super(status, body, cause);
     }
 }
