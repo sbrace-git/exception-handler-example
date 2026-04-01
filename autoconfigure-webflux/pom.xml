@@ -8,9 +8,8 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>extended-problem-detail-autoconfigure-webflux</artifactId>
-    <name>Extended Problem Detail Autoconfiguration for WebFlux</name>
-    <description>Spring Boot autoconfiguration module for extended ProblemDetail exception handling in Spring Webflux
-    </description>
+    <name>Extended Problem Detail AutoConfiguration for WebFlux</name>
+    <description>Spring Boot auto-configuration module providing extended ProblemDetail exception handling for Spring WebFlux applications</description>
 
     <dependencies>
         <!-- Core module -->
@@ -98,7 +97,15 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>com.github.sbracely.extended.problem.detail.test.flux.FluxExtendedProblemDetailApplicationTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

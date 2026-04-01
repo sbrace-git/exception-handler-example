@@ -9,8 +9,8 @@
     </parent>
 
     <artifactId>extended-problem-detail-spring-boot-starter-webmvc</artifactId>
-    <name>Extended Problem Detail Spring Boot Starter for WebMVC</name>
-    <description>Spring Boot Starter for extended ProblemDetail exception handling in Spring WebMVC applications</description>
+    <name>Extended Problem Detail Starter for WebMVC</name>
+    <description>Spring Boot starter combining all dependencies for extended ProblemDetail exception handling in WebMVC applications</description>
 
     <dependencies>
         <dependency>

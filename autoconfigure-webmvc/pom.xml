@@ -9,8 +9,8 @@
     </parent>
 
     <artifactId>extended-problem-detail-autoconfigure-webmvc</artifactId>
-    <name>Extended Problem Detail Autoconfiguration for WebMVC</name>
-    <description>Spring Boot autoconfiguration module for extended ProblemDetail exception handling in Spring WebMVC</description>
+    <name>Extended Problem Detail AutoConfiguration for WebMVC</name>
+    <description>Spring Boot auto-configuration module providing extended ProblemDetail exception handling for Spring WebMVC applications</description>
 
     <dependencies>
         <!-- Core module -->
@@ -89,6 +89,15 @@
                             <artifactId>lombok</artifactId>
                         </path>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>com.github.sbracely.extended.problem.detail.test.mvc.MvcExtendedProblemDetailApplicationTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>

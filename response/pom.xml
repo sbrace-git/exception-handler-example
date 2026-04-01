@@ -9,8 +9,8 @@
     </parent>
 
     <artifactId>extended-problem-detail-response</artifactId>
-    <name>Extended Problem Detail Core</name>
-    <description>Core module providing extended ProblemDetail response model with field-level error support</description>
+    <name>Extended Problem Detail Response</name>
+    <description>Core response module providing ExtendedProblemDetail and Error model classes for field-level error information</description>
 
     <dependencies>
         <!-- Compile dependencies -->
@@ -21,14 +21,5 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
