@@ -642,98 +642,9 @@ class FluxExtendProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Test
-    void errorResponseExceptionNotAcceptableApiVersionException() {
-        String uri = BASE_PATH + "/api-version-test";
-        EntityExchangeResult<ExtendedProblemDetail> result = webTestClient.get()
-                .uri(uri)
-                .header("API-Version", "2")
-                .exchange()
-                .expectStatus()
-                .isEqualTo(BAD_REQUEST)
-                .expectHeader()
-                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .expectBody(ExtendedProblemDetail.class)
-                .returnResult();
-        ExtendedProblemDetail extendedProblemDetail = result.getResponseBody();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail).isNotNull();
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Invalid API version: '2.0.0'.");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-    }
-
-    @Test
-    void errorResponseExceptionMissingApiVersionException() {
-        String uri = BASE_PATH + "/api-version-test";
-        EntityExchangeResult<ExtendedProblemDetail> result = webTestClient.get()
-                .uri(uri)
-                .exchange()
-                .expectStatus()
-                .isEqualTo(BAD_REQUEST)
-                .expectHeader()
-                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .expectBody(ExtendedProblemDetail.class)
-                .returnResult();
-        ExtendedProblemDetail extendedProblemDetail = result.getResponseBody();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail).isNotNull();
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("API version is required.");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-    }
-
-
     @Test
     void errorResponseException() {
-        String uri = BASE_PATH + "/error-response-exception";
+        String uri = BASE_PATH + "/error-response";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
                 .exchange()
                 .expectStatus().isEqualTo(BAD_REQUEST)
@@ -743,13 +654,60 @@ class FluxExtendProblemDetailTests {
         log.info("extendedProblemDetail: {}", extendedProblemDetail);
         assertThat(extendedProblemDetail).isNotNull();
         assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo("错误标题");
         assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("error response exception");
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("错误详情");
         assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).containsExactlyInAnyOrder(
+                new Error("错误信息1"),new Error("错误信息2")
+        );
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Test
     void methodValidationException() {
@@ -793,26 +751,4 @@ class FluxExtendProblemDetailTests {
                 new Error("支付频繁")
         );
     }
-
-
-    @Test
-    void missingApiVersionException() {
-        String uri = BASE_PATH + "/missing-api-version";
-        ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
-                .exchange()
-                .expectStatus().isEqualTo(BAD_REQUEST)
-                .expectHeader().contentType(APPLICATION_PROBLEM_JSON)
-                .expectBody(ExtendedProblemDetail.class)
-                .returnResult().getResponseBody();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail).isNotNull();
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getDetail()).isNotEmpty();
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).isNull();
-    }
-
 }

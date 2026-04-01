@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.accept.InvalidApiVersionException;
 import org.springframework.web.accept.MissingApiVersionException;
 import org.springframework.web.bind.annotation.*;
@@ -182,54 +183,59 @@ public class FluxExtendProblemDetailController {
         throw new PayloadTooLargeException(new RuntimeException("payload too large"));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @GetMapping("/error-response-exception")
-    public Mono<Void> errorResponseException() {
-        log.info("error response exception");
-        throw new org.springframework.web.ErrorResponseException(HttpStatus.BAD_REQUEST);
+    @GetMapping("/error-response")
+    public Mono<Void> errorResponse() {
+        log.info("error response");
+        ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail();
+        extendedProblemDetail.setDetail("错误详情");
+        extendedProblemDetail.setTitle("错误标题");
+        extendedProblemDetail.setStatus(HttpStatus.BAD_REQUEST.value());
+        extendedProblemDetail.setErrors(Lists.newArrayList(new Error("错误信息1"), new Error("错误信息2")));
+        throw new ErrorResponseException(HttpStatus.BAD_REQUEST,extendedProblemDetail,new RuntimeException("business exception"));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @GetMapping("/method-validation")
     public Mono<Void> methodValidation() {
