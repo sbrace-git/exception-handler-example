@@ -43,7 +43,7 @@ class MvcExtendProblemDetailRandomPortTests {
     @LocalServerPort
     private int port;
 
-    private static final String BASE_PATH = "/mvc-problem-detail";
+    private static final String BASE_PATH = "/mvc-extended-problem-detail";
 
     @Nested
     @AutoConfigureTestRestTemplate

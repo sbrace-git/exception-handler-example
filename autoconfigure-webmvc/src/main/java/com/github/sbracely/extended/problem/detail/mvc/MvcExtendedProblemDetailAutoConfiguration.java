@@ -1,6 +1,6 @@
 package com.github.sbracely.extended.problem.detail.mvc;
 
-import com.github.sbracely.extended.problem.detail.mvc.handler.ExtendedProblemDetailMvcExceptionHandler;
+import com.github.sbracely.extended.problem.detail.mvc.handler.MvcExtendedProblemDetailExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Bean;
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
-@EnableConfigurationProperties(ExtendedProblemDetailMvcProperties.class)
+@EnableConfigurationProperties(MvcExtendedProblemDetailProperties.class)
 @ConditionalOnProperty(prefix = "extended.problem-detail", name = "enabled", havingValue = "true", matchIfMissing = true)
-public class ExtendedProblemDetailMvcAutoConfiguration {
+public class MvcExtendedProblemDetailAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExtendedProblemDetailMvcExceptionHandler requestExceptionHandler() {
-        return new ExtendedProblemDetailMvcExceptionHandler();
+    public MvcExtendedProblemDetailExceptionHandler requestExceptionHandler() {
+        return new MvcExtendedProblemDetailExceptionHandler();
     }
 
 }

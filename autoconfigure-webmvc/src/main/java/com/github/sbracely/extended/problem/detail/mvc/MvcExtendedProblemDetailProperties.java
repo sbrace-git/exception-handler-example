@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Configuration properties for extended ProblemDetail exception handling.
  */
 @ConfigurationProperties(prefix = "extended.problem-detail")
-public class ExtendedProblemDetailMvcProperties {
+public class MvcExtendedProblemDetailProperties {
 
     /**
      * Whether to enable extended ProblemDetail exception handling.

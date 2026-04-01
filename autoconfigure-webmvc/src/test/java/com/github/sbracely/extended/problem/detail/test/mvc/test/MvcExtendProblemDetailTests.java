@@ -38,7 +38,7 @@ class MvcExtendProblemDetailTests {
     @Autowired
     private MockMvcTester mockMvcTester;
 
-    private static final String BASE_PATH = "/mvc-problem-detail";
+    private static final String BASE_PATH = "/mvc-extended-problem-detail";
 
     @Test
     void httpRequestMethodNotSupportedException() {

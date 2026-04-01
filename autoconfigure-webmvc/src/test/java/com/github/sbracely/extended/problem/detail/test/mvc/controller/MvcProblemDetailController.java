@@ -46,7 +46,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
-@RequestMapping("/mvc-problem-detail")
+@RequestMapping("/mvc-extended-problem-detail")
 public class MvcProblemDetailController {
 
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;

@@ -39,7 +39,7 @@ class FluxExtendProblemDetailTests {
     @Autowired
     private WebTestClient webTestClient;
 
-    private static final String BASE_PATH = "/extend-problem-detail-flux";
+    private static final String BASE_PATH = "/flux-extend-problem-detail";
 
     @Test
     void methodNotAllowedException() {
@@ -550,7 +550,6 @@ class FluxExtendProblemDetailTests {
                 return Mono.empty();
             }
         }
-
 
         @Test
         void responseStatusExceptionNotAcceptableApiVersionException() {

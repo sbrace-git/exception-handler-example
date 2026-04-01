@@ -28,7 +28,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/extend-problem-detail-flux")
+@RequestMapping("/flux-extend-problem-detail")
 public class FluxExtendProblemDetailController {
 
     private final ProblemDetailService problemDetailService;
