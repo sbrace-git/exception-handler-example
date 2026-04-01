@@ -57,8 +57,6 @@ class FluxExtendedProblemDetailTests {
     private static final String BASE_PATH = "/flux-extended-problem-detail";
 
     /**
-     * Test method not allowed exception handling.
-     *
      * @see MethodNotAllowedException
      * @see FluxExtendedProblemDetailController#methodNotAllowedException()
      */
@@ -83,8 +81,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test not acceptable status exception handling.
-     *
      * @see NotAcceptableStatusException
      * @see FluxExtendedProblemDetailController#notAcceptableStatusException()
      */
@@ -111,8 +107,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test unsupported media type status exception handling.
-     *
      * @see UnsupportedMediaTypeStatusException
      * @see FluxExtendedProblemDetailController#unsupportedMediaTypeStatusException()
      */
@@ -137,8 +131,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test missing request value exception handling.
-     *
      * @see MissingRequestValueException
      * @see FluxExtendedProblemDetailController#missingRequestValueException(String)
      */
@@ -162,8 +154,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test unsatisfied request parameter exception handling.
-     *
      * @see UnsatisfiedRequestParameterException
      * @see FluxExtendedProblemDetailController#unsatisfiedRequestParameterException()
      */
@@ -188,8 +178,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test web exchange bind exception handling.
-     *
      * @see WebExchangeBindException
      * @see FluxExtendedProblemDetailController#webExchangeBindException(ProblemDetailRequest)
      */
@@ -225,8 +213,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for cookie value.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionCookieValue(String)
      * @see HandlerMethodValidationException.Visitor#cookieValue(CookieValue, ParameterValidationResult)
@@ -254,8 +240,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for matrix variable.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionMatrix(String, List)
      * @see HandlerMethodValidationException.Visitor#matrixVariable(MatrixVariable, ParameterValidationResult)
@@ -282,8 +266,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for model attribute.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionModelAttribute(ProblemDetailRequest)
      * @see HandlerMethodValidationException.Visitor#modelAttribute(ModelAttribute, ParameterErrors)
@@ -310,8 +292,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for path variable.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionPathVariable(String)
      * @see HandlerMethodValidationException.Visitor#pathVariable(PathVariable, ParameterValidationResult)
@@ -338,8 +318,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for request body.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestBody(ProblemDetailRequest)
      * @see HandlerMethodValidationException.Visitor#requestBody(RequestBody, ParameterErrors)
@@ -372,8 +350,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for request body validation result.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestBodyValidationResult(List)
      * @see HandlerMethodValidationException.Visitor#requestBodyValidationResult(RequestBody, ParameterValidationResult)
@@ -404,8 +380,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for request header.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestHeader(String)
      * @see HandlerMethodValidationException.Visitor#requestHeader(RequestHeader, ParameterValidationResult)
@@ -433,8 +407,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for request param.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestParam(String, String)
      * @see HandlerMethodValidationException.Visitor#requestParam(RequestParam, ParameterValidationResult)
@@ -468,8 +440,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for request part.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionRequestPart(FilePart)
      * @see HandlerMethodValidationException.Visitor#requestPart(RequestPart, ParameterErrors)
@@ -497,8 +467,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test handler method validation exception for other parameters.
-     *
      * @see HandlerMethodValidationException
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionOther(String, String, String)
      * @see HandlerMethodValidationException.Visitor#other(ParameterValidationResult)
@@ -530,8 +498,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test server web input exception handling.
-     *
      * @see ServerWebInputException
      * @see FluxExtendedProblemDetailController#serverWebInputException()
      */
@@ -556,8 +522,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test server error exception handling.
-     *
      * @see ServerErrorException
      * @see FluxExtendedProblemDetailController#serverErrorException()
      */
@@ -582,8 +546,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test response status exception handling.
-     *
      * @see ResponseStatusException
      * @see FluxExtendedProblemDetailController#responseStatusException()
      */
@@ -608,8 +570,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test content too large exception handling.
-     *
      * @see ContentTooLargeException
      * @see FluxExtendedProblemDetailController#contentTooLargeException(byte[])
      */
@@ -635,9 +595,9 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * {@link org.springframework.web.accept.InvalidApiVersionException}
-     * {@link org.springframework.web.accept.MissingApiVersionException}
-     * {@link org.springframework.web.accept.NotAcceptableApiVersionException}
+     * {@link InvalidApiVersionException}
+     * {@link MissingApiVersionException}
+     * {@link NotAcceptableApiVersionException}
      */
     @Nested
     @TestPropertySource(properties = {
@@ -649,8 +609,6 @@ class FluxExtendedProblemDetailTests {
     class ApiVersionTests {
 
         /**
-         * Test invalid API version exception handling.
-         *
          * @see InvalidApiVersionException
          * @see FluxExtendedProblemDetailController#invalidApiVersionException()
          */
@@ -676,8 +634,6 @@ class FluxExtendedProblemDetailTests {
         }
 
         /**
-         * Test missing API version exception handling.
-         *
          * @see MissingApiVersionException
          * @see FluxExtendedProblemDetailController#missingApiVersionException()
          */
@@ -703,7 +659,7 @@ class FluxExtendedProblemDetailTests {
         }
 
         /**
-         * {@link org.springframework.web.accept.NotAcceptableApiVersionException}
+         * {@link NotAcceptableApiVersionException}
          */
         @RestController
         static class NotAcceptableApiVersionController {
@@ -715,8 +671,6 @@ class FluxExtendedProblemDetailTests {
         }
 
         /**
-         * Test not acceptable API version exception handling.
-         *
          * @see NotAcceptableApiVersionException
          * @see NotAcceptableApiVersionController#notAcceptableApiVersion()
          */
@@ -743,8 +697,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test no resource found exception handling.
-     *
      * @see NoResourceFoundException
      */
     @Test
@@ -768,8 +720,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test payload too large exception handling.
-     *
      * @see PayloadTooLargeException
      * @see FluxExtendedProblemDetailController#payloadTooLargeException(byte[])
      */
@@ -795,8 +745,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test error response exception handling.
-     *
      * @see ErrorResponseException
      * @see FluxExtendedProblemDetailController#errorResponseException()
      */
@@ -823,8 +771,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test extended error response exception handling.
-     *
      * @see ExtendedErrorResponseException
      * @see FluxExtendedProblemDetailController#extendedErrorResponseException()
      */
@@ -852,8 +798,6 @@ class FluxExtendedProblemDetailTests {
     }
 
     /**
-     * Test method validation exception handling.
-     *
      * @see MethodValidationException
      * @see FluxExtendedProblemDetailController#methodValidationException()
      */
