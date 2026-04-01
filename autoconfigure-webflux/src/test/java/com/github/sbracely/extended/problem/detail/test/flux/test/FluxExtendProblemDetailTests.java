@@ -403,9 +403,9 @@ class FluxExtendProblemDetailTests {
         assertThat(extendedProblemDetail.getProperties()).isNull();
         assertThat(extendedProblemDetail.getErrors()).isNull();
         assertThat(output.getOut()).contains(Arrays.asList(
-                "codes: [NotBlank.extendProblemDetailFluxController#handlerMethodValidationOther.sessionAttribute, NotBlank.sessionAttribute, NotBlank.java.lang.String, NotBlank], defaultMessage: sessionAttribute 不能为空",
-                "codes: [NotBlank.extendProblemDetailFluxController#handlerMethodValidationOther.requestAttribute, NotBlank.requestAttribute, NotBlank.java.lang.String, NotBlank], defaultMessage: requestAttribute 不能为空",
-                "codes: [NotBlank.extendProblemDetailFluxController#handlerMethodValidationOther.value, NotBlank.value, NotBlank.java.lang.String, NotBlank], defaultMessage: value 不能为空"
+                "codes: [NotBlank.fluxExtendProblemDetailController#handlerMethodValidationOther.sessionAttribute, NotBlank.sessionAttribute, NotBlank.java.lang.String, NotBlank], defaultMessage: sessionAttribute 不能为空",
+                "codes: [NotBlank.fluxExtendProblemDetailController#handlerMethodValidationOther.requestAttribute, NotBlank.requestAttribute, NotBlank.java.lang.String, NotBlank], defaultMessage: requestAttribute 不能为空",
+                "codes: [NotBlank.fluxExtendProblemDetailController#handlerMethodValidationOther.value, NotBlank.value, NotBlank.java.lang.String, NotBlank], defaultMessage: value 不能为空"
         ));
     }
 
