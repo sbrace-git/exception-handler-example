@@ -2,7 +2,7 @@ package com.github.sbracely.extended.problem.detail.test.mvc.controller;
 
 import com.github.sbracely.extended.problem.detail.response.Error;
 import com.github.sbracely.extended.problem.detail.response.ExtendedProblemDetail;
-import com.github.sbracely.extended.problem.detail.test.mvc.exception.BusinessException;
+import com.github.sbracely.extended.problem.detail.test.mvc.exception.ExtendedErrorResponseException;
 import com.github.sbracely.extended.problem.detail.test.mvc.response.ProblemDetailResponse;
 import com.github.sbracely.extended.problem.detail.test.mvc.reuqest.ProblemDetailRequest;
 import com.github.sbracely.extended.problem.detail.test.mvc.reuqest.valid.annocation.CheckMultipartFile;
@@ -297,6 +297,19 @@ public class MvcProblemDetailController {
     }
 
     /**
+     * @see ExtendedErrorResponseException
+     */
+    @GetMapping("/extended-error-response-exception")
+    public void extendedErrorResponseException() {
+        log.info("businessException");
+        ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail();
+        extendedProblemDetail.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        extendedProblemDetail.setDetail("Payment failed");
+        extendedProblemDetail.setErrors(Lists.newArrayList(new Error("Insufficient balance"), new Error("Payment frequent")));
+        throw new ExtendedErrorResponseException(HttpStatus.INTERNAL_SERVER_ERROR, extendedProblemDetail);
+    }
+
+    /**
      * @see UnsatisfiedRequestParameterException
      */
     @GetMapping(path = "/unsatisfied-request-parameter-exception", params = {"type=1", "exist", "!debug"})
@@ -431,14 +444,13 @@ public class MvcProblemDetailController {
     }
 
 
-
     /**
      * @see ResponseStatusException
      */
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "reason text")
     @GetMapping("/response-status-exception")
     public void responseStatusException() {
         log.info("responseStatusException");
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "exception");
     }
 
     /**
@@ -539,18 +551,5 @@ public class MvcProblemDetailController {
             }
         });
         return emitter;
-    }
-
-    /**
-     * @see BusinessException
-     */
-    @GetMapping("/business-exception")
-    public void businessException() {
-        log.info("businessException");
-        ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail();
-        extendedProblemDetail.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        extendedProblemDetail.setDetail("Payment failed");
-        extendedProblemDetail.setErrors(Lists.newArrayList(new Error("Insufficient balance"), new Error("Payment frequent")));
-        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, extendedProblemDetail);
     }
 }

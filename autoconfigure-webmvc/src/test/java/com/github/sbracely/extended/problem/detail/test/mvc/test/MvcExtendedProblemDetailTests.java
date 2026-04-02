@@ -3,7 +3,7 @@ package com.github.sbracely.extended.problem.detail.test.mvc.test;
 import com.github.sbracely.extended.problem.detail.response.Error;
 import com.github.sbracely.extended.problem.detail.response.ExtendedProblemDetail;
 import com.github.sbracely.extended.problem.detail.test.mvc.controller.MvcProblemDetailController;
-import com.github.sbracely.extended.problem.detail.test.mvc.exception.BusinessException;
+import com.github.sbracely.extended.problem.detail.test.mvc.exception.ExtendedErrorResponseException;
 import com.github.sbracely.extended.problem.detail.test.mvc.reuqest.ProblemDetailRequest;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncListener;
@@ -739,6 +739,32 @@ class MvcExtendedProblemDetailTests {
     }
 
     /**
+     * @see ExtendedErrorResponseException
+     * @see MvcProblemDetailController#extendedErrorResponseException()
+     */
+    @Test
+    void extendedErrorResponseException() {
+        String uri = BASE_PATH + "/extended-error-response-exception";
+        MvcTestResult result = mockMvcTester.get().uri(uri).exchange();
+        assertThat(result)
+                .hasStatus(INTERNAL_SERVER_ERROR)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Payment failed");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).containsExactlyInAnyOrder(
+                new Error("Insufficient balance"),
+                new Error("Payment frequent")
+        );
+    }
+
+    /**
      * @see MethodNotAllowedException
      * @see MvcProblemDetailController#methodNotAllowedException(HttpMethod)
      */
@@ -1179,29 +1205,5 @@ class MvcExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getErrors()).isNull();
     }
 
-    /**
-     * @see BusinessException
-     * @see MvcProblemDetailController#businessException()
-     */
-    @Test
-    void businessException() {
-        String uri = BASE_PATH + "/business-exception";
-        MvcTestResult result = mockMvcTester.get().uri(uri).exchange();
-        assertThat(result)
-                .hasStatus(INTERNAL_SERVER_ERROR)
-                .hasContentType(APPLICATION_PROBLEM_JSON);
-        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
-                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Payment failed");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).containsExactlyInAnyOrder(
-                new Error("Insufficient balance"),
-                new Error("Payment frequent")
-        );
-    }
+
 }
