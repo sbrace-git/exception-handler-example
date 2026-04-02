@@ -91,6 +91,14 @@ public class MvcProblemDetailController {
     }
 
     /**
+     * @see HttpMediaTypeNotAcceptableException
+     */
+    @PutMapping(path = "/http-media-type-not-acceptable-exception", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void httpMediaTypeNotAcceptableException(ProblemDetailRequest problemDetailRequest) {
+        log.info("httpMediaTypeNotAcceptableException, problemDetailRequest: {}", problemDetailRequest);
+    }
+
+    /**
      * @see MissingPathVariableException
      */
     @DeleteMapping("/missing-path-variable-exception")
@@ -140,13 +148,6 @@ public class MvcProblemDetailController {
         throw new org.springframework.web.bind.MissingRequestValueException("missing request value", true);
     }
 
-    /**
-     * @see HttpMediaTypeNotAcceptableException
-     */
-    @PutMapping(path = "/http-media-type-not-acceptable-exception", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void httpMediaTypeNotAcceptableException(ProblemDetailRequest problemDetailRequest) {
-        log.info("httpMediaTypeNotAcceptableException, problemDetailRequest: {}", problemDetailRequest);
-    }
 
     /**
      * @see MissingMatrixVariableException
@@ -170,14 +171,6 @@ public class MvcProblemDetailController {
     @GetMapping("/missing-request-header-exception")
     public void missingRequestHeaderException(@RequestHeader String header) {
         log.info("missingRequestHeaderException, header: {}", header);
-    }
-
-    /**
-     * @see UnsatisfiedRequestParameterException
-     */
-    @GetMapping(path = "/unsatisfied-request-parameter-exception", params = {"type=1", "exist", "!debug"})
-    public void unsatisfiedRequestParameterException() {
-        log.info("unsatisfiedRequestParameterException");
     }
 
     /**
@@ -236,6 +229,15 @@ public class MvcProblemDetailController {
 
     /**
      * @see HandlerMethodValidationException
+     * @see HandlerMethodValidationException.Visitor#requestBodyValidationResult(RequestBody, ParameterValidationResult)
+     */
+    @PostMapping("/handler-method-validation-exception-request-body-validation-result")
+    public void handlerMethodValidationExceptionRequestBodyValidationResult(@RequestBody List<@NotBlank(message = "Element cannot contain empty values") String> list) {
+        log.info("handlerMethodValidationExceptionRequestBodyValidationResult, list: {}", list);
+    }
+
+    /**
+     * @see HandlerMethodValidationException
      * @see HandlerMethodValidationException.Visitor#requestHeader(RequestHeader, ParameterValidationResult)
      */
     @GetMapping("/handler-method-validation-exception-request-header")
@@ -277,13 +279,13 @@ public class MvcProblemDetailController {
     }
 
     /**
-     * @see HandlerMethodValidationException
-     * @see HandlerMethodValidationException.Visitor#requestBodyValidationResult(RequestBody, ParameterValidationResult)
+     * @see UnsatisfiedRequestParameterException
      */
-    @PostMapping("/handler-method-validation-exception-request-body-validation-result")
-    public void handlerMethodValidationExceptionRequestBodyValidationResult(@RequestBody List<@NotBlank(message = "Element cannot contain empty values") String> list) {
-        log.info("handlerMethodValidationExceptionRequestBodyValidationResult, list: {}", list);
+    @GetMapping(path = "/unsatisfied-request-parameter-exception", params = {"type=1", "exist", "!debug"})
+    public void unsatisfiedRequestParameterException() {
+        log.info("unsatisfiedRequestParameterException");
     }
+
 
     /**
      * @see AsyncRequestTimeoutException

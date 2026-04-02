@@ -113,6 +113,54 @@ class MvcExtendedProblemDetailTests {
     }
 
     /**
+     * @see HttpMediaTypeNotAcceptableException
+     * @see MvcProblemDetailController#httpMediaTypeNotAcceptableException(ProblemDetailRequest)
+     */
+    @Test
+    void httpMediaTypeNotAcceptableException() {
+        String uri = BASE_PATH + "/http-media-type-not-acceptable-exception";
+        MvcTestResult result = mockMvcTester.put().uri(uri)
+                .header(ACCEPT, APPLICATION_XML_VALUE).exchange();
+        assertThat(result)
+                .hasStatus(NOT_ACCEPTABLE)
+                .hasContentType(APPLICATION_PROBLEM_JSON)
+                .hasHeader(ACCEPT, APPLICATION_JSON_VALUE);
+        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(NOT_ACCEPTABLE.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Acceptable representations: [application/json].");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
+
+    /**
+     * @see MissingPathVariableException
+     * @see MvcProblemDetailController#missingPathVariableException(Integer)
+     */
+    @Test
+    void missingPathVariableException() {
+        String uri = BASE_PATH + "/missing-path-variable-exception";
+        MvcTestResult result = mockMvcTester.delete().uri(uri).exchange();
+        assertThat(result)
+                .hasStatus(INTERNAL_SERVER_ERROR)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
+        assertThat(extendedProblemDetail.getDetail()).contains("Required path variable");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
+
+    /**
      * @see MissingServletRequestParameterException
      * @see MvcProblemDetailController#missingServletRequestParameterException(Integer)
      */
@@ -247,85 +295,6 @@ class MvcExtendedProblemDetailTests {
     }
 
     /**
-     * @see MissingPathVariableException
-     * @see MvcProblemDetailController#missingPathVariableException(Integer)
-     */
-    @Test
-    void missingPathVariableException() {
-        String uri = BASE_PATH + "/missing-path-variable-exception";
-        MvcTestResult result = mockMvcTester.delete().uri(uri).exchange();
-        assertThat(result)
-                .hasStatus(INTERNAL_SERVER_ERROR)
-                .hasContentType(APPLICATION_PROBLEM_JSON);
-        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
-                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(INTERNAL_SERVER_ERROR.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(INTERNAL_SERVER_ERROR.value());
-        assertThat(extendedProblemDetail.getDetail()).contains("Required path variable");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).isNull();
-    }
-
-    /**
-     * @see MethodNotAllowedException
-     * @see MvcProblemDetailController#methodNotAllowedException(HttpMethod)
-     */
-    @Test
-    void methodNotAllowedException() {
-        String uri = BASE_PATH + "/method-not-allowed-exception";
-        MvcTestResult result = mockMvcTester.delete().uri(uri).exchange();
-        assertThat(result)
-                .hasStatus(METHOD_NOT_ALLOWED)
-                .hasContentType(APPLICATION_PROBLEM_JSON)
-                .containsHeader(ALLOW)
-                .headers()
-                .hasHeaderSatisfying(ALLOW, header ->
-                        assertThat(header)
-                                .singleElement()
-                                .matches(h -> h.contains(GET.name()) && h.contains(POST.name())));
-        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
-                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
-        assertThat(extendedProblemDetail.getDetail()).startsWith("Supported methods: [")
-                .contains("GET", "POST").endsWith("]");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).isNull();
-    }
-
-    /**
-     * @see HttpMediaTypeNotAcceptableException
-     * @see MvcProblemDetailController#httpMediaTypeNotAcceptableException(ProblemDetailRequest)
-     */
-    @Test
-    void httpMediaTypeNotAcceptableException() {
-        String uri = BASE_PATH + "/http-media-type-not-acceptable-exception";
-        MvcTestResult result = mockMvcTester.put().uri(uri)
-                .header(ACCEPT, APPLICATION_XML_VALUE).exchange();
-        assertThat(result)
-                .hasStatus(NOT_ACCEPTABLE)
-                .hasContentType(APPLICATION_PROBLEM_JSON)
-                .hasHeader(ACCEPT, APPLICATION_JSON_VALUE);
-        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
-                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(NOT_ACCEPTABLE.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(NOT_ACCEPTABLE.value());
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Acceptable representations: [application/json].");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).isNull();
-    }
-
-
-    /**
      * @see MissingRequestCookieException
      * @see MvcProblemDetailController#missingRequestCookieException(String)
      */
@@ -366,29 +335,6 @@ class MvcExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
         assertThat(extendedProblemDetail.getDetail()).isEqualTo("Required header 'header' is not present.");
-        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
-        assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).isNull();
-    }
-
-    /**
-     * @see UnsatisfiedRequestParameterException
-     * @see MvcProblemDetailController#unsatisfiedRequestParameterException()
-     */
-    @Test
-    void unsatisfiedRequestParameterException() {
-        String uri = BASE_PATH + "/unsatisfied-request-parameter-exception";
-        MvcTestResult result = mockMvcTester.get().uri(uri).param("type", "1").exchange();
-        assertThat(result)
-                .hasStatus(BAD_REQUEST)
-                .hasContentType(APPLICATION_PROBLEM_JSON);
-        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
-                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
-        log.info("extendedProblemDetail: {}", extendedProblemDetail);
-        assertThat(extendedProblemDetail.getType()).isNull();
-        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
-        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getDetail()).isNotNull();
         assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(extendedProblemDetail.getProperties()).isNull();
         assertThat(extendedProblemDetail.getErrors()).isNull();
@@ -558,6 +504,34 @@ class MvcExtendedProblemDetailTests {
 
     /**
      * @see HandlerMethodValidationException
+     * @see MvcProblemDetailController#handlerMethodValidationExceptionRequestBodyValidationResult(List)
+     * @see HandlerMethodValidationException.Visitor#requestBodyValidationResult(RequestBody, ParameterValidationResult)
+     */
+    @Test
+    void handlerMethodValidationExceptionRequestBodyValidationResult() {
+        String uri = BASE_PATH + "/handler-method-validation-exception-request-body-validation-result";
+        MvcTestResult result = mockMvcTester.post().uri(uri).contentType(APPLICATION_JSON).content("""
+                              ["","a"]
+                """).exchange();
+        assertThat(result)
+                .hasStatus(BAD_REQUEST)
+                .hasContentType(APPLICATION_PROBLEM_JSON);
+        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).singleElement()
+                .isEqualTo(new Error(Error.Type.PARAMETER, null, "Element cannot contain empty values"));
+
+    }
+
+    /**
+     * @see HandlerMethodValidationException
      * @see MvcProblemDetailController#handlerMethodValidationExceptionRequestHeader(String)
      * @see HandlerMethodValidationException.Visitor#requestHeader(RequestHeader, ParameterValidationResult)
      */
@@ -660,16 +634,43 @@ class MvcExtendedProblemDetailTests {
     }
 
     /**
-     * @see HandlerMethodValidationException
-     * @see MvcProblemDetailController#handlerMethodValidationExceptionRequestBodyValidationResult(List)
-     * @see HandlerMethodValidationException.Visitor#requestBodyValidationResult(RequestBody, ParameterValidationResult)
+     * @see MethodNotAllowedException
+     * @see MvcProblemDetailController#methodNotAllowedException(HttpMethod)
      */
     @Test
-    void handlerMethodValidationExceptionRequestBodyValidationResult() {
-        String uri = BASE_PATH + "/handler-method-validation-exception-request-body-validation-result";
-        MvcTestResult result = mockMvcTester.post().uri(uri).contentType(APPLICATION_JSON).content("""
-                              ["","a"]
-                """).exchange();
+    void methodNotAllowedException() {
+        String uri = BASE_PATH + "/method-not-allowed-exception";
+        MvcTestResult result = mockMvcTester.delete().uri(uri).exchange();
+        assertThat(result)
+                .hasStatus(METHOD_NOT_ALLOWED)
+                .hasContentType(APPLICATION_PROBLEM_JSON)
+                .containsHeader(ALLOW)
+                .headers()
+                .hasHeaderSatisfying(ALLOW, header ->
+                        assertThat(header)
+                                .singleElement()
+                                .matches(h -> h.contains(GET.name()) && h.contains(POST.name())));
+        ExtendedProblemDetail extendedProblemDetail = assertThat(result).bodyJson()
+                .convertTo(ExtendedProblemDetail.class).isNotNull().actual();
+        log.info("extendedProblemDetail: {}", extendedProblemDetail);
+        assertThat(extendedProblemDetail.getType()).isNull();
+        assertThat(extendedProblemDetail.getTitle()).isEqualTo(METHOD_NOT_ALLOWED.getReasonPhrase());
+        assertThat(extendedProblemDetail.getStatus()).isEqualTo(METHOD_NOT_ALLOWED.value());
+        assertThat(extendedProblemDetail.getDetail()).startsWith("Supported methods: [")
+                .contains("GET", "POST").endsWith("]");
+        assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
+        assertThat(extendedProblemDetail.getProperties()).isNull();
+        assertThat(extendedProblemDetail.getErrors()).isNull();
+    }
+
+    /**
+     * @see UnsatisfiedRequestParameterException
+     * @see MvcProblemDetailController#unsatisfiedRequestParameterException()
+     */
+    @Test
+    void unsatisfiedRequestParameterException() {
+        String uri = BASE_PATH + "/unsatisfied-request-parameter-exception";
+        MvcTestResult result = mockMvcTester.get().uri(uri).param("type", "1").exchange();
         assertThat(result)
                 .hasStatus(BAD_REQUEST)
                 .hasContentType(APPLICATION_PROBLEM_JSON);
@@ -679,13 +680,12 @@ class MvcExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getType()).isNull();
         assertThat(extendedProblemDetail.getTitle()).isEqualTo(BAD_REQUEST.getReasonPhrase());
         assertThat(extendedProblemDetail.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(extendedProblemDetail.getDetail()).isEqualTo("Validation failure");
+        assertThat(extendedProblemDetail.getDetail()).isNotNull();
         assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(extendedProblemDetail.getProperties()).isNull();
-        assertThat(extendedProblemDetail.getErrors()).singleElement()
-                .isEqualTo(new Error(Error.Type.PARAMETER, null, "Element cannot contain empty values"));
-
+        assertThat(extendedProblemDetail.getErrors()).isNull();
     }
+
 
     /**
      * @see AsyncRequestTimeoutException
