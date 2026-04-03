@@ -217,7 +217,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
                                                                                HttpHeaders headers,
                                                                                HttpStatus status,
                                                                                WebRequest request) {
-        List<Error> errors = methodValidationExceptionToError(ex);
+        List<Error> errors = methodValidationExceptionConvertToError(ex);
         String method = ex.getMethod().getName();
         log.error("handleMethodValidationException method = {}, errors = {}", method, errors, ex);
         ProblemDetail body = createProblemDetail(ex, status, "Validation failed", null, null, request);
@@ -226,7 +226,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
         return handleExceptionInternal(ex, extendedProblemDetail, headers, status, request);
     }
 
-    private List<Error> methodValidationExceptionToError(MethodValidationException ex) {
+    private List<Error> methodValidationExceptionConvertToError(MethodValidationException ex) {
         List<Error> errors = new ArrayList<>();
         ex.getParameterValidationResults().forEach(parameterValidationResult -> {
             if (parameterValidationResult instanceof ParameterErrors parameterErrors) {

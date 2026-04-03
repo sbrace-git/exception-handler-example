@@ -6,13 +6,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.method.MethodValidationException;
 import org.springframework.validation.method.ParameterErrors;
 import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.annotation.*;
@@ -167,6 +165,42 @@ public class FluxExtendedProblemDetailExceptionHandler extends ResponseEntityExc
         ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail(ex.getBody());
         extendedProblemDetail.setErrors(errorList);
         return handleExceptionInternal(ex, extendedProblemDetail, headers, status, exchange);
+    }
+
+    @Override
+    protected Mono<ResponseEntity<Object>> handleMethodValidationException(MethodValidationException ex, HttpStatus status, ServerWebExchange exchange) {
+        List<Error> errors = methodValidationExceptionConvertToError(ex);
+        String method = ex.getMethod().getName();
+        log.error("handleMethodValidationException method = {}, errors = {}", method, errors, ex);
+        ProblemDetail body = createProblemDetail(ex, status, "Validation failed", null, null, exchange);
+        ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail(body);
+        extendedProblemDetail.setErrors(errors);
+        return handleExceptionInternal(ex, extendedProblemDetail, null, status, exchange);
+    }
+
+    private List<Error> methodValidationExceptionConvertToError(MethodValidationException ex) {
+        List<Error> errors = new ArrayList<>();
+        ex.getParameterValidationResults().forEach(parameterValidationResult -> {
+            if (parameterValidationResult instanceof ParameterErrors parameterErrors) {
+                parameterErrors.getAllErrors().stream().map(this::ObjectErrorConvertToError).forEach(errors::add);
+            } else {
+                String parameterName = parameterValidationResult.getMethodParameter().getParameterName();
+                parameterValidationResult.getResolvableErrors().stream().map(messageSourceResolvable -> {
+                    Error error = new Error();
+                    error.setField(parameterName);
+                    error.setType(Error.Type.PARAMETER);
+                    error.setMessage(messageSourceResolvable.getDefaultMessage());
+                    return error;
+                }).forEach(errors::add);
+            }
+        });
+        ex.getCrossParameterValidationResults().forEach(parameterValidationResult -> {
+            Error error = new Error();
+            error.setType(Error.Type.PARAMETER);
+            error.setMessage(parameterValidationResult.getDefaultMessage());
+            errors.add(error);
+        });
+        return errors;
     }
 
     /**

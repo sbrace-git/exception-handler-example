@@ -298,8 +298,10 @@ public class FluxExtendedProblemDetailController {
     @GetMapping("/method-validation-exception")
     public Mono<Void> methodValidationException() {
         log.info("methodValidationException");
-        String result = problemDetailService.createProblemDetail("");
-        log.info("result: {}", result);
+        ProblemDetailRequest problemDetailRequest = new ProblemDetailRequest();
+        problemDetailRequest.setPassword("a");
+        problemDetailRequest.setName("");
+        problemDetailService.createProblemDetail(null, problemDetailRequest);
         return Mono.empty();
     }
 }
