@@ -67,8 +67,8 @@ public class FluxExtendedProblemDetailAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public FluxExtendedProblemDetailExceptionHandler requestExceptionHandler() {
-        return new FluxExtendedProblemDetailExceptionHandler();
+    public FluxExtendedProblemDetailExceptionHandler requestExceptionHandler(FluxExtendedProblemDetailProperties properties) {
+        return new FluxExtendedProblemDetailExceptionHandler(properties);
     }
 
 }

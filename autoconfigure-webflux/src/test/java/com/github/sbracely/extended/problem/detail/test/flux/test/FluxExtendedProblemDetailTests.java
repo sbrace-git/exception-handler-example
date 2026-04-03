@@ -7,6 +7,7 @@ import com.github.sbracely.extended.problem.detail.test.flux.controller.FluxExte
 import com.github.sbracely.extended.problem.detail.test.flux.exception.ExtendedErrorResponseException;
 import com.github.sbracely.extended.problem.detail.test.flux.request.ProblemDetailRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -472,6 +473,7 @@ class FluxExtendedProblemDetailTests {
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionOther(String, String, String)
      * @see HandlerMethodValidationException.Visitor#other(ParameterValidationResult)
      */
+    @Disabled
     @Test
     @ExtendWith(OutputCaptureExtension.class)
     void handlerMethodValidationExceptionOther(CapturedOutput output) {

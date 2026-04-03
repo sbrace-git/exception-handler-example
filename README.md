@@ -109,20 +109,22 @@ For Spring WebFlux applications:
 </dependency>
 ```
 
-### 2. Enable Extended Problem Detail (Optional)
+### 2. Configure (Optional)
 
-By default, the feature is enabled. You can explicitly configure it in `application.yml`:
+By default, the feature is enabled with DEBUG log level. You can customize configuration in `application.yml`:
 
 ```yaml
 extended:
   problem-detail:
     enabled: true
+    log-level: DEBUG  # TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
 ```
 
 Or in `application.properties`:
 
 ```properties
 extended.problem-detail.enabled=true
+extended.problem-detail.log-level=DEBUG
 ```
 
 ### 3. That's It
@@ -401,6 +403,7 @@ When adding new features:
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
 | `extended.problem-detail.enabled` | Boolean | true | Enable/disable extended problem detail handling |
+| `extended.problem-detail.log-level` | LogLevel | DEBUG | Log level for validation exceptions (TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF) |
 
 ## Contributing
 

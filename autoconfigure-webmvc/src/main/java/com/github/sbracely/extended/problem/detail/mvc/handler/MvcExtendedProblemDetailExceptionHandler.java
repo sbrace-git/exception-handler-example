@@ -1,11 +1,13 @@
 package com.github.sbracely.extended.problem.detail.mvc.handler;
 
+import com.github.sbracely.extended.problem.detail.core.logging.ExtendedProblemDetailLog;
 import com.github.sbracely.extended.problem.detail.core.response.Error;
 import com.github.sbracely.extended.problem.detail.core.converter.ErrorConverter;
 import com.github.sbracely.extended.problem.detail.core.response.ExtendedProblemDetail;
+import com.github.sbracely.extended.problem.detail.mvc.MvcExtendedProblemDetailProperties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.method.MethodValidationException;
@@ -44,12 +46,24 @@ import java.util.List;
  *
  * @see ResponseEntityExceptionHandler
  * @see ErrorConverter
+ * @see MvcExtendedProblemDetailProperties
  * @since 0.0.1-SNAPSHOT
  */
 @RestControllerAdvice
 public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(MvcExtendedProblemDetailExceptionHandler.class);
+    protected final Log logger = LogFactory.getLog(getClass());
+
+    private final MvcExtendedProblemDetailProperties properties;
+
+    /**
+     * Constructs a new handler with the specified properties.
+     *
+     * @param properties the configuration properties
+     */
+    public MvcExtendedProblemDetailExceptionHandler(MvcExtendedProblemDetailProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Handles method argument not valid exceptions.
@@ -135,7 +149,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
     @Override
     protected @Nullable ResponseEntity<Object> handleAsyncRequestNotUsableException(
             AsyncRequestNotUsableException ex, WebRequest request) {
-        log.error("handleAsyncRequestNotUsableException", ex);
+        logger.error("handleAsyncRequestNotUsableException", ex);
         return null;
     }
 
@@ -146,7 +160,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
                                                                                WebRequest request) {
         List<Error> errors = ErrorConverter.methodValidationExceptionConvertToError(ex);
         String method = ex.getMethod().getName();
-        log.debug("handleMethodValidationException method = {}, errors = {}", method, errors, ex);
+        ExtendedProblemDetailLog.log(logger, properties.getLogLevel(), properties.isPrintStackTrace(), ex, "handleMethodValidationException method = {}, errors = {}", method, errors);
         ProblemDetail body = createProblemDetail(ex, status, "Validation failed", null, null, request);
         ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail(body);
         extendedProblemDetail.setErrors(errors);

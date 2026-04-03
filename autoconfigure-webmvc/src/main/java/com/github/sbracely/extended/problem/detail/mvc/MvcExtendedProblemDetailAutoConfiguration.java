@@ -67,8 +67,8 @@ public class MvcExtendedProblemDetailAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public MvcExtendedProblemDetailExceptionHandler requestExceptionHandler() {
-        return new MvcExtendedProblemDetailExceptionHandler();
+    public MvcExtendedProblemDetailExceptionHandler requestExceptionHandler(MvcExtendedProblemDetailProperties properties) {
+        return new MvcExtendedProblemDetailExceptionHandler(properties);
     }
 
 }
