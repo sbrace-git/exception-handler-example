@@ -1,10 +1,11 @@
 package com.github.sbracely.extended.problem.detail.core.converter;
 
+import com.github.sbracely.extended.problem.detail.core.logging.ExtendedProblemDetailLog;
 import com.github.sbracely.extended.problem.detail.core.response.Error;
 import com.github.sbracely.extended.problem.detail.core.response.ExtendedProblemDetail;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 public final class ErrorConverter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ErrorConverter.class);
+    private static final Log logger = LogFactory.getLog(ErrorConverter.class);
 
     private ErrorConverter() {
     }
@@ -112,7 +113,8 @@ public final class ErrorConverter {
      * @param ex the HandlerMethodValidationException to process
      * @return list of Error objects representing all validation errors
      */
-    public static List<Error> processHandlerMethodValidationException(HandlerMethodValidationException ex) {
+    public static List<Error> processHandlerMethodValidationException(HandlerMethodValidationException ex,
+                                                                      ExtendedProblemDetailLog log) {
         List<Error> errorList = new ArrayList<>();
         ex.visitResults(new HandlerMethodValidationException.Visitor() {
 
@@ -164,7 +166,7 @@ public final class ErrorConverter {
             @Override
             public void other(ParameterValidationResult result) {
                 result.getResolvableErrors().forEach(error ->
-                        logger.warn("codes: {}, defaultMessage: {}", error.getCodes(), error.getDefaultMessage()));
+                        log.log(logger, null, "codes: {}, defaultMessage: {}", error.getCodes(), error.getDefaultMessage()));
             }
 
             private @Nullable String getParameterName(ParameterValidationResult result) {

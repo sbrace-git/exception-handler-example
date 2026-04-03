@@ -6,7 +6,7 @@ import org.slf4j.helpers.MessageFormatter;
 import org.springframework.boot.logging.LogLevel;
 
 /**
- * Utility class for logging at configurable log levels.
+ * Logger for extended problem detail with configurable log level and stack trace printing.
  * <p>
  * This class provides a convenient way to log messages at a dynamically
  * configured log level, supporting SLF4J-style placeholder syntax.
@@ -16,31 +16,40 @@ import org.springframework.boot.logging.LogLevel;
  */
 public final class ExtendedProblemDetailLog {
 
-    private ExtendedProblemDetailLog() {
+    private final LogLevel logLevel;
+    private final boolean printStackTrace;
+
+    /**
+     * Creates a new instance with the specified configuration.
+     *
+     * @param logLevel        the log level
+     * @param printStackTrace whether to print exception stack trace
+     */
+    public ExtendedProblemDetailLog(LogLevel logLevel, boolean printStackTrace) {
+        this.logLevel = logLevel;
+        this.printStackTrace = printStackTrace;
     }
 
     /**
-     * Logs a message at the specified log level with placeholder support and optional exception.
+     * Logs a message with placeholder support and optional exception.
      * <p>
-     * Supports SLF4J-style placeholders: {@code logWithException(logger, DEBUG, "Error processing {}", ex, true, name)}
+     * Supports SLF4J-style placeholders: {@code log(logger, ex, "Error processing {}", name)}
      * </p>
      *
-     * @param logger          the logger to use
-     * @param level           the log level
-     * @param printStackTrace whether to include the exception stack trace in the log
-     * @param ex              the exception to log
-     * @param message         the message with optional placeholders
-     * @param args            the arguments to replace placeholders
+     * @param logger  the logger to use
+     * @param ex      the exception to log (can be null)
+     * @param message the message with optional placeholders
+     * @param args    the arguments to replace placeholders
      */
-    public static void log(Log logger, LogLevel level, boolean printStackTrace, @Nullable Throwable ex, String message, Object... args) {
-        if (level == LogLevel.OFF) {
+    public void log(Log logger, @Nullable Throwable ex, String message, @Nullable Object... args) {
+        if (logLevel == LogLevel.OFF) {
             return;
         }
         String formattedMessage = MessageFormatter.arrayFormat(message, args).getMessage();
         if (printStackTrace && ex != null) {
-            level.log(logger, formattedMessage, ex);
+            logLevel.log(logger, formattedMessage, ex);
         } else {
-            level.log(logger, formattedMessage);
+            logLevel.log(logger, formattedMessage);
         }
     }
 }

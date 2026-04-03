@@ -1,5 +1,6 @@
 package com.github.sbracely.extended.problem.detail.flux;
 
+import com.github.sbracely.extended.problem.detail.core.logging.ExtendedProblemDetailLog;
 import com.github.sbracely.extended.problem.detail.core.response.ExtendedProblemDetail;
 import com.github.sbracely.extended.problem.detail.flux.handler.FluxExtendedProblemDetailExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -67,8 +68,14 @@ public class FluxExtendedProblemDetailAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public FluxExtendedProblemDetailExceptionHandler requestExceptionHandler(FluxExtendedProblemDetailProperties properties) {
-        return new FluxExtendedProblemDetailExceptionHandler(properties);
+    public ExtendedProblemDetailLog extendedProblemDetailLog(FluxExtendedProblemDetailProperties properties) {
+        return new ExtendedProblemDetailLog(properties.getLogLevel(), properties.isPrintStackTrace());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public FluxExtendedProblemDetailExceptionHandler requestExceptionHandler(ExtendedProblemDetailLog extendedProblemDetailLog) {
+        return new FluxExtendedProblemDetailExceptionHandler(extendedProblemDetailLog);
     }
 
 }

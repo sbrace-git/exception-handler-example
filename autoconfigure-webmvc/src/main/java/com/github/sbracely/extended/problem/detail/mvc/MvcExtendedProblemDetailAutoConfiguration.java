@@ -1,5 +1,6 @@
 package com.github.sbracely.extended.problem.detail.mvc;
 
+import com.github.sbracely.extended.problem.detail.core.logging.ExtendedProblemDetailLog;
 import com.github.sbracely.extended.problem.detail.core.response.ExtendedProblemDetail;
 import com.github.sbracely.extended.problem.detail.mvc.handler.MvcExtendedProblemDetailExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -67,8 +68,14 @@ public class MvcExtendedProblemDetailAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public MvcExtendedProblemDetailExceptionHandler requestExceptionHandler(MvcExtendedProblemDetailProperties properties) {
-        return new MvcExtendedProblemDetailExceptionHandler(properties);
+    public ExtendedProblemDetailLog extendedProblemDetailLog(MvcExtendedProblemDetailProperties properties) {
+        return new ExtendedProblemDetailLog(properties.getLogLevel(), properties.isPrintStackTrace());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MvcExtendedProblemDetailExceptionHandler requestExceptionHandler(ExtendedProblemDetailLog extendedProblemDetailLog) {
+        return new MvcExtendedProblemDetailExceptionHandler(extendedProblemDetailLog);
     }
 
 }

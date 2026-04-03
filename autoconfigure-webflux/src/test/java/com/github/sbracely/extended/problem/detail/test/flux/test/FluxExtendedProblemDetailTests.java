@@ -1,5 +1,6 @@
 package com.github.sbracely.extended.problem.detail.test.flux.test;
 
+import com.github.sbracely.extended.problem.detail.core.logging.ExtendedProblemDetailLog;
 import com.github.sbracely.extended.problem.detail.core.response.Error;
 import com.github.sbracely.extended.problem.detail.core.response.ExtendedProblemDetail;
 import com.github.sbracely.extended.problem.detail.test.flux.config.MethodValidationConfiguration;
@@ -10,12 +11,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -38,11 +39,15 @@ import org.springframework.web.accept.NotAcceptableApiVersionException;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.ALLOW;
 import static org.springframework.http.HttpMethod.GET;
@@ -57,6 +62,9 @@ class FluxExtendedProblemDetailTests {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @MockitoSpyBean
+    private ExtendedProblemDetailLog extendedProblemDetailLog;
 
     private static final String BASE_PATH = "/flux-extended-problem-detail";
 
@@ -475,10 +483,8 @@ class FluxExtendedProblemDetailTests {
      * @see FluxExtendedProblemDetailController#handlerMethodValidationExceptionOther(String, String, String)
      * @see HandlerMethodValidationException.Visitor#other(ParameterValidationResult)
      */
-    @Disabled
     @Test
-    @ExtendWith(OutputCaptureExtension.class)
-    void handlerMethodValidationExceptionOther(CapturedOutput output) {
+    void handlerMethodValidationExceptionOther() {
         String uri = BASE_PATH + "/handler-method-validation-exception-other";
         ExtendedProblemDetail extendedProblemDetail = webTestClient.get().uri(uri)
                 .exchange()
@@ -495,11 +501,16 @@ class FluxExtendedProblemDetailTests {
         assertThat(extendedProblemDetail.getInstance()).isEqualTo(URI.create(uri));
         assertThat(extendedProblemDetail.getProperties()).isNull();
         assertThat(extendedProblemDetail.getErrors()).isNull();
-        assertThat(output.getOut()).contains(Arrays.asList(
-                "codes: [NotBlank.fluxExtendedProblemDetailController#handlerMethodValidationExceptionOther.sessionAttribute, NotBlank.sessionAttribute, NotBlank.java.lang.String, NotBlank], defaultMessage: sessionAttribute cannot be empty",
-                "codes: [NotBlank.fluxExtendedProblemDetailController#handlerMethodValidationExceptionOther.requestAttribute, NotBlank.requestAttribute, NotBlank.java.lang.String, NotBlank], defaultMessage: requestAttribute cannot be empty",
-                "codes: [NotBlank.fluxExtendedProblemDetailController#handlerMethodValidationExceptionOther.value, NotBlank.value, NotBlank.java.lang.String, NotBlank], defaultMessage: value cannot be empty"
-        ));
+        ArgumentCaptor<Object[]> argsCaptor = ArgumentCaptor.forClass(Object[].class);
+        verify(extendedProblemDetailLog, atLeastOnce()).log(any(), isNull(), eq("codes: {}, defaultMessage: {}"), argsCaptor.capture());
+        List<String> defaultMessages = argsCaptor.getAllValues().stream()
+                .map(args -> (String) args[1])
+                .toList();
+        assertThat(defaultMessages).containsExactlyInAnyOrder(
+                "sessionAttribute cannot be empty",
+                "requestAttribute cannot be empty",
+                "value cannot be empty"
+        );
     }
 
     /**

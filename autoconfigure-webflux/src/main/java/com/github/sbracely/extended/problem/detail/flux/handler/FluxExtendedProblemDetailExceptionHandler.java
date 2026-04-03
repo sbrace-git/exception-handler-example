@@ -4,7 +4,6 @@ import com.github.sbracely.extended.problem.detail.core.converter.ErrorConverter
 import com.github.sbracely.extended.problem.detail.core.logging.ExtendedProblemDetailLog;
 import com.github.sbracely.extended.problem.detail.core.response.Error;
 import com.github.sbracely.extended.problem.detail.core.response.ExtendedProblemDetail;
-import com.github.sbracely.extended.problem.detail.flux.FluxExtendedProblemDetailProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.*;
@@ -50,15 +49,15 @@ public class FluxExtendedProblemDetailExceptionHandler extends ResponseEntityExc
 
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private final FluxExtendedProblemDetailProperties properties;
+    private final ExtendedProblemDetailLog extendedProblemDetailLog;
 
     /**
-     * Constructs a new handler with the specified properties.
+     * Constructs a new handler with the specified log instance.
      *
-     * @param properties the configuration properties
+     * @param extendedProblemDetailLog the ExtendedProblemDetailLog instance
      */
-    public FluxExtendedProblemDetailExceptionHandler(FluxExtendedProblemDetailProperties properties) {
-        this.properties = properties;
+    public FluxExtendedProblemDetailExceptionHandler(ExtendedProblemDetailLog extendedProblemDetailLog) {
+        this.extendedProblemDetailLog = extendedProblemDetailLog;
     }
 
     /**
@@ -100,7 +99,7 @@ public class FluxExtendedProblemDetailExceptionHandler extends ResponseEntityExc
      */
     @Override
     protected Mono<ResponseEntity<Object>> handleHandlerMethodValidationException(HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, ServerWebExchange exchange) {
-        List<Error> errorList = ErrorConverter.processHandlerMethodValidationException(ex);
+        List<Error> errorList = ErrorConverter.processHandlerMethodValidationException(ex, extendedProblemDetailLog);
         ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail(ex.getBody());
         extendedProblemDetail.setErrors(errorList);
         return handleExceptionInternal(ex, extendedProblemDetail, headers, status, exchange);
@@ -110,7 +109,7 @@ public class FluxExtendedProblemDetailExceptionHandler extends ResponseEntityExc
     protected Mono<ResponseEntity<Object>> handleMethodValidationException(MethodValidationException ex, HttpStatus status, ServerWebExchange exchange) {
         List<Error> errors = ErrorConverter.methodValidationExceptionConvertToError(ex);
         String method = ex.getMethod().getName();
-        ExtendedProblemDetailLog.log(logger, properties.getLogLevel(), properties.isPrintStackTrace(), ex, "handleMethodValidationException method = {}, errors = {}", method, errors);
+        extendedProblemDetailLog.log(logger, ex, "handleMethodValidationException method = {}, errors = {}", method, errors);
         ProblemDetail body = createProblemDetail(ex, status, "Validation failed", null, null, exchange);
         ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail(body);
         extendedProblemDetail.setErrors(errors);

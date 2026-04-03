@@ -4,7 +4,6 @@ import com.github.sbracely.extended.problem.detail.core.logging.ExtendedProblemD
 import com.github.sbracely.extended.problem.detail.core.response.Error;
 import com.github.sbracely.extended.problem.detail.core.converter.ErrorConverter;
 import com.github.sbracely.extended.problem.detail.core.response.ExtendedProblemDetail;
-import com.github.sbracely.extended.problem.detail.mvc.MvcExtendedProblemDetailProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
@@ -54,15 +53,15 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
 
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private final MvcExtendedProblemDetailProperties properties;
+    private final ExtendedProblemDetailLog extendedProblemDetailLog;
 
     /**
-     * Constructs a new handler with the specified properties.
+     * Constructs a new handler with the specified log instance.
      *
-     * @param properties the configuration properties
+     * @param extendedProblemDetailLog the ExtendedProblemDetailLog instance
      */
-    public MvcExtendedProblemDetailExceptionHandler(MvcExtendedProblemDetailProperties properties) {
-        this.properties = properties;
+    public MvcExtendedProblemDetailExceptionHandler(ExtendedProblemDetailLog extendedProblemDetailLog) {
+        this.extendedProblemDetailLog = extendedProblemDetailLog;
     }
 
     /**
@@ -102,7 +101,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
      */
     @Override
     public @Nullable ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        List<Error> errorList = ErrorConverter.processHandlerMethodValidationException(ex);
+        List<Error> errorList = ErrorConverter.processHandlerMethodValidationException(ex, extendedProblemDetailLog);
         ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail(ex.getBody());
         extendedProblemDetail.setErrors(errorList);
         return handleExceptionInternal(ex, extendedProblemDetail, headers, status, request);
@@ -149,7 +148,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
     @Override
     protected @Nullable ResponseEntity<Object> handleAsyncRequestNotUsableException(
             AsyncRequestNotUsableException ex, WebRequest request) {
-        logger.error("handleAsyncRequestNotUsableException", ex);
+        extendedProblemDetailLog.log(logger, ex, "handleAsyncRequestNotUsableException");
         return null;
     }
 
@@ -160,7 +159,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
                                                                                WebRequest request) {
         List<Error> errors = ErrorConverter.methodValidationExceptionConvertToError(ex);
         String method = ex.getMethod().getName();
-        ExtendedProblemDetailLog.log(logger, properties.getLogLevel(), properties.isPrintStackTrace(), ex, "handleMethodValidationException method = {}, errors = {}", method, errors);
+        extendedProblemDetailLog.log(logger, ex, "handleMethodValidationException method = {}, errors = {}", method, errors);
         ProblemDetail body = createProblemDetail(ex, status, "Validation failed", null, null, request);
         ExtendedProblemDetail extendedProblemDetail = new ExtendedProblemDetail(body);
         extendedProblemDetail.setErrors(errors);
