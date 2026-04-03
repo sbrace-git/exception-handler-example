@@ -6,6 +6,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -185,6 +186,7 @@ public class MvcExtendedProblemDetailExceptionHandler extends ResponseEntityExce
     protected @Nullable ResponseEntity<Object> handleErrorResponseException(
             ErrorResponseException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         if (ex instanceof WebExchangeBindException exchangeBindException) {
+            exchangeBindException.updateAndGetBody(getMessageSource(), LocaleContextHolder.getLocale());
             ProblemDetail body = exchangeBindException.getBody();
             BindingResult bindingResult = exchangeBindException.getBindingResult();
             List<Error> errors = bindingResult.getAllErrors().stream().map(this::ObjectErrorConvertToError).toList();

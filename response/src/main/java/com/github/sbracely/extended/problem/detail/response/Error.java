@@ -43,7 +43,18 @@ public class Error {
      *
      * @param message the error message
      */
-    public Error(String message) {
+    public Error(@Nullable String message) {
+        this.message = message;
+    }
+
+    /**
+     * Constructs an error with a field name and message.
+     *
+     * @param field   the field name that caused the error
+     * @param message the error message
+     */
+    public Error(@Nullable String field, @Nullable String message) {
+        this.field = field;
         this.message = message;
     }
 

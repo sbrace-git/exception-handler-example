@@ -202,7 +202,11 @@ public class UserRequest {
 
 ### Custom Error Response
 
-You can also create custom extended problem details programmatically:
+This library supports `ErrorResponseException` (Spring 6's standard exception for RFC 9457) as the base class for custom business exceptions. You have two options:
+
+#### Option 1: Use ErrorResponseException Directly
+
+For simple cases, throw `ErrorResponseException` directly with an `ExtendedProblemDetail`:
 
 ```java
 @Service
@@ -216,15 +220,60 @@ public class UserService {
             problem.setDetail("A user with this email already exists");
 
             List<Error> errors = new ArrayList<>();
-            errors.add(new Error(Error.Type.PARAMETER, "email", "Email is already registered"));
+            errors.add(new Error("email", "Email is already registered"));
             problem.setErrors(errors);
 
-            throw new ExtendedErrorResponseException(HttpStatus.CONFLICT, problem);
+            throw new ErrorResponseException(HttpStatus.CONFLICT, problem, null);
         }
         // Implementation
     }
 }
 ```
+
+#### Option 2: Extend ErrorResponseException
+
+For reusable business exceptions, create a custom exception class:
+
+```java
+public class InsufficientBalanceException extends ErrorResponseException {
+
+    public InsufficientBalanceException(BigDecimal currentBalance, BigDecimal requiredAmount) {
+        super(HttpStatus.PAYMENT_REQUIRED, createProblemDetail(currentBalance, requiredAmount), null);
+    }
+
+    private static ExtendedProblemDetail createProblemDetail(BigDecimal current, BigDecimal required) {
+        ExtendedProblemDetail detail = new ExtendedProblemDetail();
+        detail.setStatus(HttpStatus.PAYMENT_REQUIRED.value());
+        detail.setTitle("Insufficient Balance");
+        detail.setDetail(String.format("Current balance %s is less than required amount %s", current, required));
+
+        List<Error> errors = new ArrayList<>();
+        errors.add(new Error("balance", "Insufficient balance"));
+        errors.add(new Error("amount", "Payment amount exceeds balance"));
+        detail.setErrors(errors);
+
+        return detail;
+    }
+}
+```
+
+Then use it in your service:
+
+```java
+@Service
+public class PaymentService {
+
+    public void processPayment(BigDecimal amount) {
+        BigDecimal balance = getCurrentBalance();
+        if (balance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException(balance, amount);
+        }
+        // Process payment
+    }
+}
+```
+
+Both approaches will be handled automatically by the library's exception handlers, and the `errors` field in `ExtendedProblemDetail` will be preserved in the response.
 
 ## Supported Exception Types
 
