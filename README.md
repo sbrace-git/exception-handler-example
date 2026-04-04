@@ -45,6 +45,7 @@ Traditional Spring Boot validation error responses often lack detailed field-lev
 - **Zero Configuration**: Auto-configuration with sensible defaults
 - **Customizable**: Enable/disable via configuration properties
 - **Visitor Pattern Implementation**: Efficiently processes different parameter validation results
+- **Reusable Validation Handler**: Centralized validation error processing for both WebMVC and WebFlux
 
 ## Project Structure
 
@@ -55,6 +56,8 @@ extended-problem-detail/
 │       ├── response/                  # Response model classes
 │       │   ├── ExtendedProblemDetail.java  # Extended ProblemDetail with error list
 │       │   └── Error.java            # Individual error details (record)
+│       ├── handler/                   # Validation error handling
+│       │   └── ValidationErrorHandler.java   # Reusable validation error processor
 │       └── logging/                   # Logging utilities
 │           └── ExtendedProblemDetailLog.java  # Configurable logger for validation exceptions
 ├── autoconfigure-webmvc/              # WebMVC auto-configuration
@@ -219,15 +222,15 @@ public class UserService {
 
     public User createUser(UserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            ExtendedProblemDetail problem = new ExtendedProblemDetail();
-            problem.setStatus(HttpStatus.CONFLICT.value());
-            problem.setTitle("User already exists");
-            problem.setDetail("A user with this email already exists");
+            ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, "A user with this email already exists");
+            problemDetail.setTitle("User already exists");
 
-            List<Error> errors = new ArrayList<>();
-            errors.add(new Error(Error.Type.BUSINESS, "email", "Email is already registered"));
-            problem.setErrors(errors);
+            List<Error> errors = List.of(
+                new Error(Error.Type.BUSINESS, "email", "Email is already registered")
+            );
 
+            ExtendedProblemDetail problem = ExtendedProblemDetail.from(problemDetail, errors);
             throw new ErrorResponseException(HttpStatus.CONFLICT, problem, null);
         }
         // Implementation
@@ -247,17 +250,17 @@ public class InsufficientBalanceException extends ErrorResponseException {
     }
 
     private static ExtendedProblemDetail createProblemDetail(BigDecimal current, BigDecimal required) {
-        ExtendedProblemDetail detail = new ExtendedProblemDetail();
-        detail.setStatus(HttpStatus.PAYMENT_REQUIRED.value());
-        detail.setTitle("Insufficient Balance");
-        detail.setDetail(String.format("Current balance %s is less than required amount %s", current, required));
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+            HttpStatus.PAYMENT_REQUIRED,
+            String.format("Current balance %s is less than required amount %s", current, required));
+        problemDetail.setTitle("Insufficient Balance");
 
-        List<Error> errors = new ArrayList<>();
-        errors.add(new Error(Error.Type.BUSINESS, "balance", "Insufficient balance"));
-        errors.add(new Error(Error.Type.BUSINESS, "amount", "Payment amount exceeds balance"));
-        detail.setErrors(errors);
+        List<Error> errors = List.of(
+            new Error(Error.Type.BUSINESS, "balance", "Insufficient balance"),
+            new Error(Error.Type.BUSINESS, "amount", "Payment amount exceeds balance")
+        );
 
-        return detail;
+        return ExtendedProblemDetail.from(problemDetail, errors);
     }
 }
 ```
@@ -313,6 +316,13 @@ Extends Spring's `ProblemDetail` to add a list of `Error` objects:
 ```java
 public class ExtendedProblemDetail extends ProblemDetail {
     private List<Error> errors;
+
+    // Copy constructor
+    public ExtendedProblemDetail(ProblemDetail problemDetail)
+
+    // Static factory method
+    public static ExtendedProblemDetail from(ProblemDetail problemDetail, List<Error> errors)
+
     // Getters and setters
 }
 ```
@@ -327,12 +337,27 @@ public record Error(Type type, String target, String message) {
 }
 ```
 
+### ValidationErrorHandler
+
+Central component for processing validation errors, shared between WebMVC and WebFlux:
+
+```java
+public class ValidationErrorHandler {
+    public List<Error> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex)
+    public List<Error> handleHandlerMethodValidationException(HandlerMethodValidationException ex)
+    public List<Error> handleWebExchangeBindException(WebExchangeBindException ex)
+    public List<Error> handleMethodValidationException(MethodValidationException ex)
+}
+```
+
+This handler can be customized by extending it and overriding specific methods, or by providing a custom implementation.
+
 ### Exception Handlers
 
 - **MvcExtendedProblemDetailExceptionHandler**: Handles exceptions for Spring WebMVC applications
 - **FluxExtendedProblemDetailExceptionHandler**: Handles exceptions for Spring WebFlux applications
 
-Both handlers extend Spring's `ResponseEntityExceptionHandler` and use the Visitor pattern to process different types of parameter validation results.
+Both handlers extend Spring's `ResponseEntityExceptionHandler`, use the Visitor pattern to process different types of parameter validation results, and delegate to `ValidationErrorHandler` for error conversion.
 
 ## Testing
 
@@ -393,10 +418,41 @@ When adding new features:
 
 1. **Core Module**: Add shared classes to `core` module
    - Response models go in `core/response/`
+   - Validation handlers go in `core/handler/`
    - Logging utilities go in `core/logging/`
 2. **WebMVC Support**: Implement handlers in `autoconfigure-webmvc`
 3. **WebFlux Support**: Implement handlers in `autoconfigure-webflux`
 4. **Tests**: Add corresponding tests in each module's test directory
+
+### Customizing Validation Error Handling
+
+To customize how validation errors are processed, extend `ValidationErrorHandler`:
+
+```java
+@Component
+public class CustomValidationErrorHandler extends ValidationErrorHandler {
+
+    public CustomValidationErrorHandler(ExtendedProblemDetailLog log) {
+        super(log);
+    }
+
+    @Override
+    protected void handleCookieValue(CookieValue cookieValue, ParameterValidationResult result, List<Error> errorList) {
+        // Custom cookie validation error handling
+        super.handleCookieValue(cookieValue, result, errorList);
+    }
+}
+```
+
+Then register it as a bean to override the default:
+
+```java
+@Bean
+@ConditionalOnMissingBean
+public ValidationErrorHandler validationErrorHandler(ExtendedProblemDetailLog log) {
+    return new CustomValidationErrorHandler(log);
+}
+```
 
 ### Configuration Properties
 
