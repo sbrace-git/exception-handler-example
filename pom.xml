@@ -40,7 +40,7 @@
     </properties>
 
     <modules>
-        <module>core</module>
+        <module>common</module>
         <module>autoconfigure-webmvc</module>
         <module>autoconfigure-webflux</module>
         <module>starter-webmvc</module>
@@ -51,7 +51,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.github.sbracely</groupId>
-                <artifactId>extended-problem-detail-core</artifactId>
+                <artifactId>extended-problem-detail-common</artifactId>
                 <version>${extended-problem-detail.version}</version>
             </dependency>
             <dependency>

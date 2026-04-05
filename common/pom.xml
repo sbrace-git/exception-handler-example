@@ -8,9 +8,9 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>extended-problem-detail-core</artifactId>
-    <name>Extended Problem Detail Response</name>
-    <description>Core response module providing ExtendedProblemDetail and Error model classes for field-level error information</description>
+    <artifactId>extended-problem-detail-common</artifactId>
+    <name>Extended Problem Detail Common</name>
+    <description>Common module providing ExtendedProblemDetail and Error model classes for field-level error information</description>
 
     <dependencies>
         <!-- Compile dependencies -->
