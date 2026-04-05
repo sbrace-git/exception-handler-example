@@ -8,16 +8,14 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>extended-problem-detail-spring-boot-starter-webmvc</artifactId>
+    <artifactId>extended-problem-detail-webflux-parent</artifactId>
     <packaging>pom</packaging>
-    <name>Extended Problem Detail Starter for WebMVC</name>
-    <description>Spring Boot starter combining all dependencies for extended ProblemDetail exception handling in WebMVC applications</description>
+    <name>Extended Problem Detail WebFlux Parent</name>
+    <description>Parent module for Extended Problem Detail WebFlux support</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.sbracely</groupId>
-            <artifactId>extended-problem-detail-autoconfigure-webmvc</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>autoconfigure</module>
+        <module>starter</module>
+    </modules>
 
 </project>

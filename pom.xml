@@ -41,10 +41,8 @@
 
     <modules>
         <module>common</module>
-        <module>autoconfigure-webmvc</module>
-        <module>autoconfigure-webflux</module>
-        <module>starter-webmvc</module>
-        <module>starter-webflux</module>
+        <module>webmvc</module>
+        <module>webflux</module>
     </modules>
 
     <dependencyManagement>
